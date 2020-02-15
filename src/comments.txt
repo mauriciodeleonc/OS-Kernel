@@ -1,0 +1,45 @@
+//Cada uno de estos es un arreglo de los procesos que contienen
+            //No hay new porque ese se crea manualmente
+            /*
+        Pasar a cada uno de los estados la lista de procesos 
+        que van en cada uno como props
+    */
+
+    //Despues de la ultima col se pasa a otro row y se pone el boton para cargar archivo
+    /*
+        Este componente se encarga de ese archivo para que con 
+        eso se puedan cargar los arreglos del state
+    */
+
+    /*
+        <Row>
+                <Col>
+                    <h2>Procesos</h2>
+                </Col>
+                <Col>
+                    <New />
+                </Col>
+                <Col>
+                    <Ready procesos = {this.state.ready}/>
+                </Col>
+                <Col>
+                    <Running procesos = {this.state.running}/>
+                </Col>
+                <Col>
+                    <Blocked procesos = {this.state.blocked}/>
+                </Col>
+                <Col>
+                    <Finished procesos = {this.state.finished}/>
+                </Col>
+            </Row>
+    */
+
+    //READY.JS
+    /*constructor(props){
+        super(props);
+        this.state = {
+            nombre: 1,
+            pagina: '0',
+            ejecTotal: '0'
+        }
+    }*/

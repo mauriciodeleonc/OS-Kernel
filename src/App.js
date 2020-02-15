@@ -16,6 +16,23 @@ function App() {
           <Control />
         </Col>
       </Row>
+      <Row>
+        <Col>
+          <Procesos />
+        </Col>
+      </Row>
+      {/*
+      <Row>
+        <Col>
+          <CPU />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Memoria />
+        </Col>
+      </Row>
+      */}
     </Container>
   );
 }
