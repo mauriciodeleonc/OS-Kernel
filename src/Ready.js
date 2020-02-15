@@ -3,7 +3,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
 class Ready extends React.Component{
     /*constructor(props){
@@ -17,10 +17,10 @@ class Ready extends React.Component{
 
     render(){
         return(
-            <Card style={{ width: '18rem' }}>
+            <Card style={{ width: '100%' }}>
                 <Card.Header>Ready</Card.Header>
                 <Card.Body>
-                    <p>Prueba</p>
+                    
                 </Card.Body>
             </Card>
         );

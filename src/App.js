@@ -10,7 +10,7 @@ import Memoria from './Memoria';
 
 function App() {
   return (
-    <Container>
+    <Container fluid>
       <Row>
         <Col>
           <Control />
