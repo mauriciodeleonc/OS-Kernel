@@ -23,8 +23,7 @@ class Control extends React.Component {
         return (
             <Row>
                 <Col>
-                    <p>Tiempo Actual</p>
-                    <p>{this.state.tiempoActual}</p>
+                    <p>Tiempo Actual: {this.state.tiempoActual}</p>
                     <Button variant="primary" onClick={this.incrementarTiempo}>Agregar tiempo</Button>
                 </Col>
                 <Col>

@@ -11,22 +11,22 @@ import Memoria from './Memoria';
 function App() {
   return (
     <Container fluid>
-      <Row>
+      <Row className="control">
         <Col>
           <Control />
         </Col>
       </Row>
-      <Row>
+      <Row className="procesos">
         <Col>
           <Procesos />
         </Col>
       </Row>
-      {/*
-      <Row>
+      <Row className="cpu">
         <Col>
           <CPU />
         </Col>
       </Row>
+      {/*
       <Row>
         <Col>
           <Memoria />
