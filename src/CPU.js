@@ -13,7 +13,7 @@ class CPU extends React.Component{
                     <h2>CPU</h2>
                 </Col>
                 <Col sm={7}>
-                    <Scheduling />
+                    <Scheduling running = {this.props.running}/>
                 </Col>
                 <Col sm={3}>
                     <ChooseCPU />

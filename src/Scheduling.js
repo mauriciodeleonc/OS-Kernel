@@ -6,11 +6,11 @@ class Scheduling extends React.Component {
         super(props);
 
         this.state = {
-            nombre: '',
-            llegada: '',
-            cpuAsignado: '',
-            envejecimiento: '',
-            cpuRestante: '',
+            nombre: this.props.nombreProceso,
+            llegada: this.props.llegada,
+            cpuAsignado: 0,
+            envejecimiento: 0 - this.props.llegada - this.props.cpuAsignado,
+            cpuRestante: this.props.tiempoEstimado,
             quantumRestante: ''
         }
     }
