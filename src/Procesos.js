@@ -31,26 +31,28 @@ class Procesos extends React.Component {
     }
 
     llenarProcesos(archivo){
-        let contadorArchivo = 7;
+        let contadorArchivo = 3;
         let maxPaginas = archivo[0];
         let tiempoActual = archivo[1];
         let numeroProcesos = archivo[2];
         for(let i = 0; i < numeroProcesos; i++){
             let nombreProceso = i + 1;
-            let llegada = archivo[3];
-            let tiempoEstimado = archivo[4];
-            let estado = archivo[5];
-            let numeroPaginas = archivo[6];
-            let paginas = [];
+            let llegada = archivo[contadorArchivo++];
+            let tiempoEstimado = archivo[contadorArchivo++];
+            let estado = archivo[contadorArchivo++];
+            let numeroPaginas = archivo[contadorArchivo++];
+            let paginas = new Array(numeroPaginas);
             for(let j = 0; j < numeroPaginas; j++){
+                paginas[j] = new Array(6);
                 for(let k = 0; k < 6; k++){
-                    paginas[j][k] = archivo[contadorArchivo++]
+                    paginas[j][k] = archivo[contadorArchivo++];
                 }
+                
             }
 
-            if(estado === 1){
-                this.setState(state => ({
-                    running: state.running.push(
+            if(estado == 1){
+                this.setState({
+                    running: [...this.state.running, 
                         {
                             nombreProceso: nombreProceso,
                             llegada: llegada,
@@ -58,12 +60,13 @@ class Procesos extends React.Component {
                             estado: estado,
                             paginas: paginas
                         }
-                    )
-                }));
+                    ]
+                });
+        
             }
-            if(estado === 2){
-                this.setState(state => ({
-                    blocked: state.blocked.push(
+            if(estado == 2){
+                this.setState({
+                    blocked: [...this.state.blocked,
                         {
                             nombreProceso: nombreProceso,
                             llegada: llegada,
@@ -71,12 +74,12 @@ class Procesos extends React.Component {
                             estado: estado,
                             paginas: paginas
                         }
-                    )
-                }));
+                    ]
+                });
             }
-            if(estado === 3){
-                this.setState(state => ({
-                    blocked: state.blocked.push(
+            if(estado == 3){
+                this.setState({
+                    ready: [...this.state.ready,
                         {
                             nombreProceso: nombreProceso,
                             llegada: llegada,
@@ -84,13 +87,14 @@ class Procesos extends React.Component {
                             estado: estado,
                             paginas: paginas
                         }
-                    )
-                }));
+                    ]
+                });
             } 
         }
-        console.log(this.state.ready);
+        
         console.log(this.state.running);
         console.log(this.state.blocked);
+        console.log(this.state.ready);
 
     }
 
@@ -98,7 +102,9 @@ class Procesos extends React.Component {
     handleFileRead(){
         let archivo = fileReader.result;
         archivo = archivo.replace(/\n/g, ",").split(",");
-        console.log(archivo);
+        for(let i = 0; i < archivo.length; i++) {
+            archivo[i] = archivo[i].replace(" ", "");
+        }
         this.llenarProcesos(archivo);
     }
 
