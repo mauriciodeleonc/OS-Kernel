@@ -3,6 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
 
 class Ready extends React.Component{
+    
     constructor(props){
         super(props);
         this.state = {
@@ -17,6 +18,7 @@ class Ready extends React.Component{
             <Card style={{ width: '100%' }}>
                 <Card.Header>Ready</Card.Header>
                 <Card.Body>
+                    {this.props.procesos.nombreProceso}
                 </Card.Body>
             </Card>
         );

@@ -51,8 +51,8 @@ class Procesos extends React.Component {
             }
 
             if(estado == 1){
-                this.setState({
-                    running: [...this.state.running, 
+                this.setState(state => ({ 
+                    running:
                         {
                             nombreProceso: nombreProceso,
                             llegada: llegada,
@@ -60,13 +60,12 @@ class Procesos extends React.Component {
                             estado: estado,
                             paginas: paginas
                         }
-                    ]
-                });
+                }));
         
             }
             if(estado == 2){
-                this.setState({
-                    blocked: [...this.state.blocked,
+                this.setState(state => ({ 
+                    blocked: 
                         {
                             nombreProceso: nombreProceso,
                             llegada: llegada,
@@ -74,12 +73,11 @@ class Procesos extends React.Component {
                             estado: estado,
                             paginas: paginas
                         }
-                    ]
-                });
+                }));
             }
             if(estado == 3){
-                this.setState({
-                    ready: [...this.state.ready,
+                this.setState(state => ({ 
+                    ready: 
                         {
                             nombreProceso: nombreProceso,
                             llegada: llegada,
@@ -87,8 +85,7 @@ class Procesos extends React.Component {
                             estado: estado,
                             paginas: paginas
                         }
-                    ]
-                });
+                }));
             } 
         }
         console.log(this.state.running);
