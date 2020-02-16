@@ -13,6 +13,11 @@ class Blocked extends React.Component{
             pagina: '0',
             ejecTotal: '0'
         }
+        /*
+            {this.props.procesos.map((proceso, index) => {
+                <p key={index}>{proceso.nombreProceso}</p>
+            })}
+        */
     }
 
     render(){
@@ -20,7 +25,7 @@ class Blocked extends React.Component{
             <Card style={{ width: '100%' }}>
                 <Card.Header>Blocked</Card.Header>
                 <Card.Body>
-                {this.props.procesos.nombreProceso}
+                    {this.props.procesos.nombreProcesos}
                 </Card.Body>
             </Card>
         );
