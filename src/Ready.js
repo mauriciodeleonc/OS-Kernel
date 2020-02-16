@@ -4,7 +4,6 @@ import Card from 'react-bootstrap/Card';
 
 class Ready extends React.Component{
     constructor(props){
-        console.log(props)
         super(props);
         this.state = {
             nombre: 1,
@@ -18,7 +17,6 @@ class Ready extends React.Component{
             <Card style={{ width: '100%' }}>
                 <Card.Header>Ready</Card.Header>
                 <Card.Body>
-                    {this.props}
                 </Card.Body>
             </Card>
         );

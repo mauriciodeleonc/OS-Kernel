@@ -91,7 +91,6 @@ class Procesos extends React.Component {
                 });
             } 
         }
-        
         console.log(this.state.running);
         console.log(this.state.blocked);
         console.log(this.state.ready);
