@@ -16,7 +16,11 @@ class App extends React.Component {
 
     this.state = {
       tiempoActual: 0,
+<<<<<<< HEAD
       numeroProcesos: '',
+=======
+      quantum: 0,
+>>>>>>> 6f55f3287fa530b02ece0c2a4cebed2de03d5b92
       //Cada uno de estos es un arreglo de los procesos que contienen
       //No hay new porque ese se crea manualmente
       ready: [],
@@ -28,22 +32,46 @@ class App extends React.Component {
     this.setReadyProcess = this.setReadyProcess.bind(this);
     this.llenarProcesos = this.llenarProcesos.bind(this);
 
+    this.setQuantumApp = this.setQuantumApp.bind(this);
+
     //Bind de funciones para leer archivo
     this.handleFileChosen = this.handleFileChosen.bind(this);
     this.handleFileRead = this.handleFileRead.bind(this);
   }
 
-  incrementarTiempo(e){
-    this.setState(state => ({
+  setStatePromise(that, newState) {
+    return new Promise((resolve) => {
+        that.setState(newState, () => {
+            resolve();
+        });
+    });
+  }
+
+  async setQuantumApp(quantum){
+    await this.setStatePromise(this, {
+        quantum: quantum
+    });
+    alert("quantum changed on App.js: " + this.state.quantum);
+  }
+
+  async incrementarTiempo(e){
+    await this.setStatePromise(this, state => ({
         tiempoActual: state.tiempoActual + 1
     }));
   }
 
-  llenarProcesos(archivo){
+  async llenarProcesos(archivo){
     let contadorArchivo = 3;
     let maxPaginas = archivo[0];
     let tiempoActual = archivo[1];
+<<<<<<< HEAD
     let numeroProcesos = archivo[2]
+=======
+    await this.setStatePromise(this,{
+      tiempoActual: parseInt(tiempoActual,10)
+    });
+    let numeroProcesos = archivo[2];
+>>>>>>> 6f55f3287fa530b02ece0c2a4cebed2de03d5b92
     for(let i = 0; i < numeroProcesos; i++){
         let nombreProceso = i + 1;
         let llegada = archivo[contadorArchivo++];
@@ -60,45 +88,60 @@ class App extends React.Component {
         }
 
         if(estado == 1){
-            this.setState({ 
+            this.setState(state => ({ 
                 running: [...this.state.running,
                     {
                         nombreProceso: nombreProceso,
                         llegada: llegada,
                         tiempoEstimado: tiempoEstimado,
                         estado: estado,
-                        paginas: paginas
+                        paginas: paginas,
+                        cpuAsignado: 0,
+                        envejecimiento: '',
+                        cpuRestante: tiempoEstimado,
+                        quantum: state.quantum,
+                        quantumRestante: state.quantum
                     }
                 ]
-            });
+            }));
     
         }
         if(estado == 2){
-            this.setState({
+            this.setState(state => ({
                 blocked: [...this.state.blocked,
                     {
                         nombreProceso: nombreProceso,
                         llegada: llegada,
                         tiempoEstimado: tiempoEstimado,
                         estado: estado,
-                        paginas: paginas
+                        paginas: paginas,
+                        cpuAsignado: 0,
+                        envejecimiento: '',
+                        cpuRestante: tiempoEstimado,
+                        quantum: state.quantum,
+                        quantumRestante: state.quantum
                     }
                 ]
-            });
+            }));
         }
         if(estado == 3){
-            this.setState({ 
+            this.setState(state => ({ 
                 ready: [...this.state.ready,
                     {
                         nombreProceso: nombreProceso,
                         llegada: llegada,
                         tiempoEstimado: tiempoEstimado,
                         estado: estado,
-                        paginas: paginas
+                        paginas: paginas,
+                        cpuAsignado: 0,
+                        envejecimiento: '',
+                        cpuRestante: tiempoEstimado,
+                        quantum: state.quantum,
+                        quantumRestante: state.quantum
                     }
 
                 ]
-            });
+            }));
         } 
     }
     this.setState(state => ({
@@ -167,15 +210,27 @@ setReadyProcess(nombreProceso, llegada, tiempoEstimado, estado, paginas) {
               running = {this.state.running}
               blocked = {this.state.blocked}
               finished = {this.state.finished}
+<<<<<<< HEAD
               numeroProcesos = {this.state.numeroProcesos}
               tiempoActual = {this.state.tiempoActual}
               setReadyProcess = {this.setReadyProcess}
               />
+=======
+            />
+>>>>>>> 6f55f3287fa530b02ece0c2a4cebed2de03d5b92
           </Col>
         </Row>
         <Row className="cpu">
           <Col>
+<<<<<<< HEAD
             <CPU running = {this.state.running} tiempoActual = {this.state.tiempoActual}/>
+=======
+            <CPU 
+              running = {this.state.running} 
+              tiempoActual = {this.state.tiempoActual}
+              setQuantumApp = {this.setQuantumApp}
+            />
+>>>>>>> 6f55f3287fa530b02ece0c2a4cebed2de03d5b92
           </Col>
         </Row>
         {/*
