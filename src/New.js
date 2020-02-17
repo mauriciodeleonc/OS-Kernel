@@ -22,7 +22,7 @@ class New extends React.Component{
             <Card style={{ width: '100%' }}>
                 <Card.Header>New</Card.Header>
                 <Card.Body>
-                    <Form>
+                    <Form >
                         <Form.Group as={Row} controlId="formHorizontalEmail">
                             <Form.Label column sm={6}>
                                 Nombre

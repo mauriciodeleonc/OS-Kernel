@@ -23,9 +23,6 @@ class App extends React.Component {
       blocked: [],
       finished: []
   }
-
-    this.setRunning = this.setRunning.bind(this);
-
     this.incrementarTiempo = this.incrementarTiempo.bind(this);
 
     this.llenarProcesos = this.llenarProcesos.bind(this);
@@ -33,12 +30,6 @@ class App extends React.Component {
     //Bind de funciones para leer archivo
     this.handleFileChosen = this.handleFileChosen.bind(this);
     this.handleFileRead = this.handleFileRead.bind(this);
-  }
-
-  setRunning(proceso){
-    this.setState({
-      running: [proceso]
-    })
   }
 
   incrementarTiempo(e){
@@ -139,7 +130,7 @@ handleFileChosen(file){
           <Row>
                 <Col>
                     <p>Tiempo Actual: {this.state.tiempoActual}</p>
-                    <Button variant="primary" onClick={this.incrementarTiempo}>Agregar tiempo</Button>
+                    <Button variant="primary" onClick={this.incrementarTiempo}>Ejecutar Instrucción</Button>
                 </Col>
                 <Col>
                     <p>Prueba</p>
@@ -150,7 +141,6 @@ handleFileChosen(file){
         <Row className="procesos">
           <Col>
             <Procesos 
-              setRunning = {this.setRunning}
               ready = {this.state.ready}
               running = {this.state.running}
               blocked = {this.state.blocked}
@@ -160,7 +150,7 @@ handleFileChosen(file){
         </Row>
         <Row className="cpu">
           <Col>
-            <CPU running = {this.state.running[0]} />
+            <CPU running = {this.state.running} tiempoActual = {this.state.tiempoActual} />
           </Col>
         </Row>
         {/*

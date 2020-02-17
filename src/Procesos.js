@@ -10,7 +10,6 @@ import Finished from './Finished';
 
 class Procesos extends React.Component {
     render(){
-        this.props.setRunning(this.props.running[0]);
         return(
             <Row>
                 <Col>
