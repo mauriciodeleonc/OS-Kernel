@@ -9,6 +9,7 @@ import Blocked from './Blocked';
 import Finished from './Finished';
 
 class Procesos extends React.Component {
+    
     render(){
         return(
             <Row>
@@ -16,7 +17,12 @@ class Procesos extends React.Component {
                     <h2>Procesos</h2>
                 </Col>
                 <Col>
-                    <New />
+                    <New numeroProcesos = {this.props.numeroProcesos}
+                    incrementarTiempo = {this.props.incrementarTiempo}
+                    procesos = {this.props.ready}
+                    tiempoActual = {this.props.tiempoActual}
+                    setReadyProcess = {this.props.setReadyProcess}
+                    />
                 </Col>
                 <Col>
                     <Ready procesos = {this.props.ready}/>

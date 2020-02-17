@@ -16,6 +16,7 @@ class App extends React.Component {
 
     this.state = {
       tiempoActual: 0,
+      numeroProcesos: '',
       //Cada uno de estos es un arreglo de los procesos que contienen
       //No hay new porque ese se crea manualmente
       ready: [],
@@ -24,7 +25,7 @@ class App extends React.Component {
       finished: []
   }
     this.incrementarTiempo = this.incrementarTiempo.bind(this);
-
+    this.setReadyProcess = this.setReadyProcess.bind(this);
     this.llenarProcesos = this.llenarProcesos.bind(this);
 
     //Bind de funciones para leer archivo
@@ -42,7 +43,7 @@ class App extends React.Component {
     let contadorArchivo = 3;
     let maxPaginas = archivo[0];
     let tiempoActual = archivo[1];
-    let numeroProcesos = archivo[2];
+    let numeroProcesos = archivo[2]
     for(let i = 0; i < numeroProcesos; i++){
         let nombreProceso = i + 1;
         let llegada = archivo[contadorArchivo++];
@@ -100,6 +101,9 @@ class App extends React.Component {
             });
         } 
     }
+    this.setState(state => ({
+      numeroProcesos: archivo[2]
+    }))
     console.log(this.state.running);
     console.log(this.state.blocked);
     console.log(this.state.ready);
@@ -122,6 +126,23 @@ handleFileChosen(file){
     fileReader.readAsText(file);
 }
 
+setReadyProcess(nombreProceso, llegada, tiempoEstimado, estado, paginas) {
+  console.log(nombreProceso,llegada, tiempoEstimado, estado, paginas )
+  this.setState({ 
+    ready: [...this.state.ready,
+        {
+            nombreProceso: nombreProceso,
+            llegada: llegada,
+            tiempoEstimado: tiempoEstimado,
+            estado: estado,
+            paginas: paginas
+        }
+
+    ]
+});
+
+}
+
   render(){
     return (
       <Container fluid>
@@ -141,16 +162,20 @@ handleFileChosen(file){
         <Row className="procesos">
           <Col>
             <Procesos 
+              incrementarTiempo = {this.incrementarTiempo}
               ready = {this.state.ready}
               running = {this.state.running}
               blocked = {this.state.blocked}
               finished = {this.state.finished}
+              numeroProcesos = {this.state.numeroProcesos}
+              tiempoActual = {this.state.tiempoActual}
+              setReadyProcess = {this.setReadyProcess}
               />
           </Col>
         </Row>
         <Row className="cpu">
           <Col>
-            <CPU running = {this.state.running} tiempoActual = {this.state.tiempoActual} />
+            <CPU running = {this.state.running} tiempoActual = {this.state.tiempoActual}/>
           </Col>
         </Row>
         {/*
