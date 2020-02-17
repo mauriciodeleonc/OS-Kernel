@@ -6,7 +6,7 @@ class Ready extends React.Component{
         return(
             <Card style={{ width: '100%' }}>
                 <Card.Header>Ready</Card.Header>
-                <Card.Body>
+                <Card.Body> 
                     {this.props.procesos.map(proceso => {
                         return(
                             <p>{proceso.nombreProceso}</p>

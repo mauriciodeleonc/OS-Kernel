@@ -28,7 +28,7 @@ class Procesos extends React.Component {
                     <Ready procesos = {this.props.ready}/>
                 </Col>
                 <Col>
-                    <Running procesos = {this.props.running}/>
+                    <Running proceso = {this.props.running}/>
                 </Col>
                 <Col>
                     <Blocked procesos = {this.props.blocked}/>

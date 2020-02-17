@@ -27,7 +27,6 @@ class CPU extends React.Component{
         await this.setStatePromise(this,{
             quantum: quantum
         });
-        alert("quantum changed on CPU: " + this.state.quantum);
         this.props.setQuantumApp(quantum);
     }
 
