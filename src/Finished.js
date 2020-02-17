@@ -22,7 +22,7 @@ class Finished extends React.Component{
                 <Card.Body>
                     {this.props.procesos.map(proceso => {
                         return(
-                            <p>{proceso.nombreProceso}</p>
+                            <p key={proceso.nombreProceso}>{proceso.nombreProceso}</p>
                         );
                     })}
                 </Card.Body>

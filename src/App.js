@@ -86,7 +86,44 @@ class App extends React.Component {
   }
 
   selectAlgoritmo(algoritmo) {
-    this.setState({ algoritmo });
+    let ready = [...this.state.ready];
+    console.log(algoritmo);
+    switch(algoritmo) {
+      case "fifo":
+        ready = this.ordenarFIFO(ready);
+        break;
+      case "rr":
+        ready = this.ordenarFIFO(ready);
+        break;
+      case "srt":
+        ready = this.ordenarSRT(ready);
+        break;
+      case "hrrn":
+        ready = this.ordenarHRRN(ready);
+        break;
+      default:
+        break;
+    }
+    this.setState({ algoritmo, ready });
+  }
+
+  ordenarFIFO(procesos) {
+    procesos.sort((a, b) => (a.llegada > b.llegada ) ? 1: -1);
+    return procesos;
+}
+
+  ordenarSRT(procesos){
+    procesos.sort((a,b) => (a.cpuRestante < b.cpuRestante) ? 1: -1);
+    return procesos;
+}
+
+  ordenarHRRN(procesos){
+    procesos.sort((a,b) => (this.prioridad(a) > this.prioridad(b)) ? 1 : -1);
+    return procesos;
+  }
+
+  prioridad(proceso){
+    return (proceso.envejecimiento+proceso.cpuRestante)/proceso.cpuRestante;
   }
 
   async llenarProcesos(archivo){
