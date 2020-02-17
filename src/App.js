@@ -23,7 +23,8 @@ class App extends React.Component {
       ready: [],
       running: {},
       blocked: [],
-      finished: []
+      finished: [],
+      algoritmo: "fifo"
   }
     this.incrementarTiempo = this.incrementarTiempo.bind(this);
     this.setReadyProcess = this.setReadyProcess.bind(this);
@@ -34,6 +35,7 @@ class App extends React.Component {
     //Bind de funciones para leer archivo
     this.handleFileChosen = this.handleFileChosen.bind(this);
     this.handleFileRead = this.handleFileRead.bind(this);
+    this.selectAlgoritmo = this.selectAlgoritmo.bind(this);
   }
 
   setStatePromise(that, newState) {
@@ -57,11 +59,17 @@ class App extends React.Component {
         running: state.ready.shift(),
         finished: [...state.finished, running]
       }));
-    } else {
+    } else if(this.state.running.quantumRestante === 0){
+      let running = this.state.running;
+      await this.setStatePromise(this, state => ({
+        running: state.ready.shift(),
+        ready: [...state.ready, running]
+      }));
+    }else {
       await this.setStatePromise(this, state => ({
         tiempoActual: state.tiempoActual + 1,
         running: {...state.running, 
-          quantumRestante: state.running.quantumRestante - 1,
+          quantumRestante: state.algoritmo === "rr" ? state.running.quantumRestante - 1 : state.running.quantumRestante,
           envejecimiento: state.running.envejecimiento + 1,
           cpuAsignado: state.running.cpuAsignado + 1,
           cpuRestante: state.running.cpuRestante - 1
@@ -75,6 +83,10 @@ class App extends React.Component {
   envejecerProcesos(procesos) { 
     return procesos.map(proceso => ({...proceso, envejecimiento: proceso.envejecimiento + 1
     }))
+  }
+
+  selectAlgoritmo(algoritmo) {
+    this.setState({ algoritmo });
   }
 
   async llenarProcesos(archivo){
@@ -227,6 +239,7 @@ setReadyProcess(nombreProceso, llegada, tiempoEstimado, estado, paginas) {
         <Row className="cpu">
           <Col>
             <CPU 
+            selectAlgoritmo={this.selectAlgoritmo}
               running = {this.state.running} 
               tiempoActual = {this.state.tiempoActual}
               setQuantumApp = {this.setQuantumApp}

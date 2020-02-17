@@ -10,16 +10,16 @@ class ChooseCPU extends React.Component {
             value: 0
         }
         this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
     }
 
     handleChange(event) {
         this.setState({value: event.target.value});
     }
 
-    handleSubmit(event) {
-        alert('A name was submitted: ' + this.state.value);
-        event.preventDefault();
+    handleSelect() {
+        let value = this.refs.select.value;
+        this.props.handleSelect(value);
     }
     
     render(){
@@ -27,14 +27,14 @@ class ChooseCPU extends React.Component {
             <Card style={{ width: '100%' }}>
                 <Card.Header>CPU</Card.Header>
                 <Card.Body>
-                    <Form onSubmit={this.handleSubmit}>
+                    <Form>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>Algoritmo</Form.Label>
-                        <Form.Control as="select">
-                            <option>FIFO</option>
-                            <option>Round Robin</option>
-                            <option>SRT (apropiativo)</option>
-                            <option>HRRN (apropiativo)</option>
+                        <Form.Control as="select" ref="select" onChange={this.handleSelect}>
+                            <option value="fifo">FIFO</option>
+                            <option value="rr">Round Robin</option>
+                            <option value="srt">SRT (apropiativo)</option>
+                            <option value="hrrn">HRRN (apropiativo)</option>
                         </Form.Control>
                     </Form.Group>
                     </Form>

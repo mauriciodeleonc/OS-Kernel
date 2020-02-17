@@ -44,7 +44,7 @@ class CPU extends React.Component{
                     />
                 </Col>
                 <Col sm={3}>
-                    <ChooseCPU setQuantum = {this.setQuantum}/>
+                    <ChooseCPU handleSelect={this.props.selectAlgoritmo} setQuantum = {this.setQuantum}/>
                 </Col>  
             </Row>
         );
