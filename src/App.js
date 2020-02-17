@@ -7,6 +7,7 @@ import Procesos from './Procesos';
 import CPU from './CPU';
 import Memoria from './Memoria';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 let fileReader;
 
@@ -24,7 +25,16 @@ class App extends React.Component {
       running: {},
       blocked: [],
       finished: [],
-      algoritmo: "fifo"
+      algoritmo: "fifo",
+      interrupciones: [
+        "SVC de solicitud de I/O",
+        "SVC de terminación normal", 
+        "SVC de solitud de fecha",
+        "Error de programa",
+        "Externa de quantum expirado",
+        "Dispositivo de I/O"
+      ],
+      interrupcion: undefined
   }
     this.incrementarTiempo = this.incrementarTiempo.bind(this);
     this.setReadyProcess = this.setReadyProcess.bind(this);
@@ -36,6 +46,18 @@ class App extends React.Component {
     this.handleFileChosen = this.handleFileChosen.bind(this);
     this.handleFileRead = this.handleFileRead.bind(this);
     this.selectAlgoritmo = this.selectAlgoritmo.bind(this);
+    this.selectInterrupcion = this.selectInterrupcion.bind(this);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.state.running === undefined && this.state.ready.length > 0) {
+      let ready = [...this.state.ready];
+      let running = ready.shift();
+      this.setState({ running, ready });
+    }
+    else if(this.state.running === undefined) {
+      this.setState({ running: {} });
+    }
   }
 
   setStatePromise(that, newState) {
@@ -53,19 +75,63 @@ class App extends React.Component {
   }
 
   async incrementarTiempo(e){
-    if(this.state.running.cpuRestante === 0) {
+    if(this.state.interrupcion) {
+      let running = this.state.running;
+      switch(this.state.interrupcion) {
+        case "SVC de terminación normal":
+      await this.setStatePromise(this, state => ({
+        running: state.ready.shift(),
+        finished: [...state.finished, running]
+      }));
+          break;
+        case "Externa de quantum expirado":
+          await this.setStatePromise(this, state => ({
+            running: state.ready.shift(),
+            ready: [...state.ready, running]
+          }));
+          break;
+        case "Dispositivo de I/O":
+          let blocked = this.state.blocked.shift();
+          await this.setStatePromise(this, state => ({
+            running: state.ready.shift(),
+            ready: [...state.ready, running, blocked]
+          }));
+          break;
+        case "SVC de solicitud de I/O":
+          await this.setStatePromise(this, state => ({
+            running: state.ready.shift(),
+            blocked: [...state.blocked, running]
+          }));
+          break;
+        case "SVC de solitud de fecha":
+          await this.setStatePromise(this, state => ({
+            running: state.ready.shift(),
+            blocked: [...state.blocked, running]
+          }));
+          break;
+        case "Error de programa":
+      await this.setStatePromise(this, state => ({
+        running: state.ready.shift(),
+        finished: [...state.finished, running]
+      }));
+          break;
+        default:
+            break;
+      }
+      await this.setStatePromise(this, state => ({ interrupcion: undefined }));
+    } else if(this.state.running.cpuRestante === 0) {
       let running = this.state.running;
       await this.setStatePromise(this, state => ({
         running: state.ready.shift(),
         finished: [...state.finished, running]
       }));
-    } else if(this.state.running.quantumRestante === 0){
+    } else if(this.state.running.quantumRestante === 0 && this.state.algoritmo === "rr"){
       let running = this.state.running;
       await this.setStatePromise(this, state => ({
         running: state.ready.shift(),
         ready: [...state.ready, running]
       }));
-    }else {
+    } else {
       await this.setStatePromise(this, state => ({
         tiempoActual: state.tiempoActual + 1,
         running: {...state.running, 
@@ -77,7 +143,6 @@ class App extends React.Component {
         ready: this.envejecerProcesos(state.ready)
     }));
     }
-    console.log(this.state);
   }
 
   envejecerProcesos(procesos) { 
@@ -105,6 +170,12 @@ class App extends React.Component {
         break;
     }
     this.setState({ algoritmo, ready });
+  }
+
+  async selectInterrupcion() {
+    let value = this.refs.interrupcion.value;
+    await this.setStatePromise(this, state => ({ interrupcion: value }));
+    this.incrementarTiempo();
   }
 
   ordenarFIFO(procesos) {
@@ -255,6 +326,9 @@ setReadyProcess(nombreProceso, llegada, tiempoEstimado, estado, paginas) {
                 </Col>
                 <Col>
                     <p>Prueba</p>
+                    <Form.Control as="select" ref="interrupcion" onChange={this.selectInterrupcion}>
+                      {this.state.interrupciones.map(interrupcion => <option key={interrupcion}>{interrupcion}</option>)}
+                    </Form.Control>
                 </Col>
             </Row>
           </Col>
