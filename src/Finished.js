@@ -20,7 +20,11 @@ class Finished extends React.Component{
             <Card style={{ width: '100%' }}>
                 <Card.Header>Finished</Card.Header>
                 <Card.Body>
-                    
+                    {this.props.procesos.map(proceso => {
+                        return(
+                            <p>{proceso.nombreProceso}</p>
+                        );
+                    })}
                 </Card.Body>
             </Card>
         );

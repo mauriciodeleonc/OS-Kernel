@@ -6,6 +6,30 @@ import Scheduling from './Scheduling';
 import ChooseCPU from './ChooseCPU';
 
 class CPU extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            quantum: 0
+        }
+
+        this.setQuantum = this.setQuantum.bind(this);
+    }
+
+    setStatePromise(that, newState) {
+        return new Promise((resolve) => {
+            that.setState(newState, () => {
+                resolve();
+            });
+        });
+    }
+
+    async setQuantum(quantum){
+        await this.setStatePromise(this,{
+            quantum: quantum
+        });
+        alert("quantum changed on CPU: " + this.state.quantum);
+        this.props.setQuantumApp(quantum);
+    }
 
     render(){
         return(
@@ -14,10 +38,14 @@ class CPU extends React.Component{
                     <h2>CPU</h2>
                 </Col>
                 <Col sm={7}>
-                    <Scheduling running = {this.props.running} tiempoActual = {this.props.tiempoActual} />
+                    <Scheduling 
+                        running = {this.props.running} 
+                        tiempoActual = {this.props.tiempoActual} 
+                        quantum = {this.state.quantum}
+                    />
                 </Col>
                 <Col sm={3}>
-                    <ChooseCPU />
+                    <ChooseCPU setQuantum = {this.setQuantum}/>
                 </Col>  
             </Row>
         );

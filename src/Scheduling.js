@@ -7,12 +7,12 @@ class Scheduling extends React.Component {
         this.state = {
             scheduling: [
                 {
-                    nombreProceso: '',
-                    llegada: '',
-                    cpuAsignado: '',
-                    envejecimiento: '',
-                    cpuRestante: '',
-                    quantumRestante: ''
+                    nombreProceso: 0,
+                    llegada: 0,
+                    cpuAsignado: 0,
+                    envejecimiento: 0,
+                    cpuRestante: 0,
+                    quantumRestante: this.props.quantum
                 }
             ]
         }
@@ -23,12 +23,12 @@ class Scheduling extends React.Component {
             if(proceso.nombreProceso !== this.state.scheduling.nombreProceso) {
                 this.setState({ 
                     scheduling: {
-                            nombreProceso: proceso.nombreProceso,
-                            llegada: proceso.llegada,
-                            cpuAsignado: 0,
-                            envejecimiento: this.props.tiempoActual - proceso.llegada,
-                            cpuRestante: proceso.tiempoEstimado,
-                            quantumRestante: 5,
+                        nombreProceso: proceso.nombreProceso,
+                        llegada: proceso.llegada,
+                        cpuAsignado: 0,
+                        envejecimiento: this.props.tiempoActual - proceso.llegada,
+                        cpuRestante: proceso.tiempoEstimado,
+                        quantumRestante: proceso.quantum,
                     }
             })
         }})
