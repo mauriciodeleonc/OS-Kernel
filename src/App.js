@@ -51,15 +51,30 @@ class App extends React.Component {
   }
 
   async incrementarTiempo(e){
-    await this.setStatePromise(this, state => ({
+    if(this.state.running.cpuRestante === 0) {
+      let running = this.state.running;
+      await this.setStatePromise(this, state => ({
+        running: state.ready.shift(),
+        finished: [...state.finished, running]
+      }));
+    } else {
+      await this.setStatePromise(this, state => ({
         tiempoActual: state.tiempoActual + 1,
         running: {...state.running, 
           quantumRestante: state.running.quantumRestante - 1,
           envejecimiento: state.running.envejecimiento + 1,
           cpuAsignado: state.running.cpuAsignado + 1,
           cpuRestante: state.running.cpuRestante - 1
-        }
+        },
+        ready: this.envejecerProcesos(state.ready)
     }));
+    }
+    console.log(this.state);
+  }
+
+  envejecerProcesos(procesos) { 
+    return procesos.map(proceso => ({...proceso, envejecimiento: proceso.envejecimiento + 1
+    }))
   }
 
   async llenarProcesos(archivo){

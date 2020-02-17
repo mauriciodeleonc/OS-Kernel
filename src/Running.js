@@ -3,7 +3,6 @@ import Card from 'react-bootstrap/Card';
 
 class Running extends React.Component{
     render(){
-        console.log(this.props.proceso);
         return(
             <Card style={{ width: '100%' }}>
                 <Card.Header>Running</Card.Header>
