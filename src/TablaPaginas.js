@@ -3,28 +3,6 @@ import './App.css';
 import Table from 'react-bootstrap/Table';
 
 class TablaPaginas extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            countPag: 0
-        }
-
-        this.setCountPag = this.setCountPag.bind(this);
-    }
-
-    setStatePromise(that, newState) {
-        return new Promise((resolve) => {
-            that.setState(newState, () => {
-                resolve();
-            });
-        });
-    }
-
-    async setCountPag(){
-        await this.setStatePromise(this,{
-            countPag: this.state.countPag + 1
-        });
-    }
     render(){
         if(this.props.running.paginas !== undefined) {
             return(
@@ -41,9 +19,9 @@ class TablaPaginas extends React.Component{
                     </thead>
                     <tbody>
                         {
-                            this.props.running.paginas.map(pagina => 
+                            this.props.running.paginas.map((pagina, i) => 
                                     <tr>
-                                        <td>{this.state.countPag}</td>
+                                        <td>{i}</td>
                                         <td>{pagina[0]}</td>
                                         <td>{pagina[1]}</td>
                                         <td>{pagina[2]}</td>
