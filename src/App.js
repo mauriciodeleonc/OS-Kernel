@@ -126,6 +126,11 @@ class App extends React.Component {
         finished: [...state.finished, running]
       }));
     } else if(this.state.running.quantumRestante === 0 && this.state.algoritmo === "rr"){
+      await this.setStatePromise(this, state => ({
+        running: {...state.running, 
+          quantumRestante: state.running.quantum, 
+        }
+      }));
       let running = this.state.running;
       await this.setStatePromise(this, state => ({
         running: state.ready.shift(),
@@ -136,7 +141,7 @@ class App extends React.Component {
         tiempoActual: state.tiempoActual + 1,
         running: {...state.running, 
           quantumRestante: state.algoritmo === "rr" ? state.running.quantumRestante - 1 : state.running.quantumRestante,
-          envejecimiento: state.running.envejecimiento + 1,
+          envejecimiento: state.tiempoActual -  state.running.llegada  - state.running.cpuAsignado,
           cpuAsignado: state.running.cpuAsignado + 1,
           cpuRestante: state.running.cpuRestante - 1
         },
@@ -152,7 +157,6 @@ class App extends React.Component {
 
   selectAlgoritmo(algoritmo) {
     let ready = [...this.state.ready];
-    console.log(algoritmo);
     switch(algoritmo) {
       case "fifo":
         ready = this.ordenarFIFO(ready);
@@ -194,7 +198,7 @@ class App extends React.Component {
   }
 
   prioridad(proceso){
-    return (proceso.envejecimiento+proceso.cpuRestante)/proceso.cpuRestante;
+    return (proceso.envejecimiento + proceso.cpuRestante)/proceso.cpuRestante;
   }
 
   async llenarProcesos(archivo){
@@ -230,7 +234,7 @@ class App extends React.Component {
                         estado: estado,
                         paginas: paginas,
                         cpuAsignado: 0,
-                        envejecimiento: 0,
+                        envejecimiento: tiempoActual - llegada,
                         cpuRestante: tiempoEstimado,
                         quantum: state.quantum,
                         quantumRestante: state.quantum
@@ -248,7 +252,7 @@ class App extends React.Component {
                         estado: estado,
                         paginas: paginas,
                         cpuAsignado: 0,
-                        envejecimiento: 0,
+                        envejecimiento: tiempoActual - llegada,
                         cpuRestante: tiempoEstimado,
                         quantum: state.quantum,
                         quantumRestante: state.quantum
@@ -266,7 +270,7 @@ class App extends React.Component {
                         estado: estado,
                         paginas: paginas,
                         cpuAsignado: 0,
-                        envejecimiento: 0,
+                        envejecimiento: tiempoActual - llegada,
                         cpuRestante: tiempoEstimado,
                         quantum: state.quantum,
                         quantumRestante: state.quantum
