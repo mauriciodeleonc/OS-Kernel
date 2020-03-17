@@ -44,3 +44,18 @@
   margin-top: 0;
   margin-bottom: 0;
 }
+
+.memoria{
+  background-color: rgb(163, 224, 102);
+  margin: 0 10px 10px 0;
+  padding: 20px;
+}
+
+.memoria.row{
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tablaPaginas{
+  background-color: white;
+}

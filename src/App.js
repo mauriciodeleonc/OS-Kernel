@@ -46,7 +46,7 @@ class App extends React.Component {
     //Bind de funciones para leer archivo
     this.handleFileChosen = this.handleFileChosen.bind(this);
     this.handleFileRead = this.handleFileRead.bind(this);
-    this.selectAlgoritmo = this.selectAlgoritmo.bind(this);
+    this.selectAlgoritmoCPU = this.selectAlgoritmoCPU.bind(this);
     this.selectInterrupcion = this.selectInterrupcion.bind(this);
   }
 
@@ -80,41 +80,47 @@ class App extends React.Component {
       let running = this.state.running;
       switch(this.state.interrupcion) {
         case "SVC de terminación normal":
-      await this.setStatePromise(this, state => ({
-        running: state.ready.shift(),
-        finished: [...state.finished, running]
-      }));
+          await this.setStatePromise(this, state => ({
+            running: state.ready.shift(),
+            finished: [...state.finished, running],
+            tiempoActual: state.tiempoActual + 1
+          }));
           break;
         case "Externa de quantum expirado":
           await this.setStatePromise(this, state => ({
             running: state.ready.shift(),
-            ready: [...state.ready, running]
+            ready: [...state.ready, running],
+            tiempoActual: state.tiempoActual + 1
           }));
           break;
         case "Dispositivo de I/O":
           let blocked = this.state.blocked.shift();
           await this.setStatePromise(this, state => ({
             running: state.ready.shift(),
-            ready: [...state.ready, running, blocked]
+            ready: [...state.ready, running, blocked],
+            tiempoActual: state.tiempoActual + 1
           }));
           break;
         case "SVC de solicitud de I/O":
           await this.setStatePromise(this, state => ({
             running: state.ready.shift(),
-            blocked: [...state.blocked, running]
+            blocked: [...state.blocked, running],
+            tiempoActual: state.tiempoActual + 1
           }));
           break;
         case "SVC de solitud de fecha":
           await this.setStatePromise(this, state => ({
             running: state.ready.shift(),
-            blocked: [...state.blocked, running]
+            blocked: [...state.blocked, running],
+            tiempoActual: state.tiempoActual + 1
           }));
           break;
         case "Error de programa":
-      await this.setStatePromise(this, state => ({
-        running: state.ready.shift(),
-        finished: [...state.finished, running]
-      }));
+          await this.setStatePromise(this, state => ({
+            running: state.ready.shift(),
+            finished: [...state.finished, running],
+            tiempoActual: state.tiempoActual + 1
+          }));
           break;
         default:
             break;
@@ -163,7 +169,7 @@ class App extends React.Component {
     }))
   }
 
-  selectAlgoritmo(algoritmo) {
+  selectAlgoritmoCPU(algoritmo) {
     let ready = [...this.state.ready];
     switch(algoritmo) {
       case "fifo":
@@ -212,6 +218,7 @@ class App extends React.Component {
   async llenarProcesos(archivo){
     let contadorArchivo = 3;
     let maxPaginas = archivo[0];
+    console.log("MaxPaginas ="  + maxPaginas);
     let tiempoActual = archivo[1];
     await this.setStatePromise(this,{
       tiempoActual: parseInt(tiempoActual,10)
@@ -219,18 +226,20 @@ class App extends React.Component {
     let numeroProcesos = archivo[2];
     for(let i = 0; i < numeroProcesos; i++){
         let nombreProceso = i + 1;
+        console.log("Proceso: " + nombreProceso);
         let llegada = archivo[contadorArchivo++];
         let tiempoEstimado = archivo[contadorArchivo++];
         let estado = archivo[contadorArchivo++];
         let numeroPaginas = archivo[contadorArchivo++];
+        console.log(numeroPaginas);
         let paginas = new Array(numeroPaginas);
         for(let j = 0; j < numeroPaginas; j++){
             paginas[j] = new Array(6);
             for(let k = 0; k < 6; k++){
                 paginas[j][k] = archivo[contadorArchivo++];
-            }
-            
+            } 
         }
+        console.log(paginas);
 
         if(estado == 1){
             this.setState(state => ({ 
@@ -337,7 +346,7 @@ setReadyProcess(nombreProceso, llegada, tiempoEstimado, estado, paginas) {
                     <Button variant="primary" onClick={this.incrementarTiempo}>Ejecutar Instrucción</Button>
                 </Col>
                 <Col>
-                    <p>Prueba</p>
+                    <p>Interrupción</p>
                     <Form.Control as="select" ref="interrupcion" onChange={this.selectInterrupcion}>
                       {this.state.interrupciones.map(interrupcion => <option key={interrupcion}>{interrupcion}</option>)}
                     </Form.Control>
@@ -356,26 +365,24 @@ setReadyProcess(nombreProceso, llegada, tiempoEstimado, estado, paginas) {
               numeroProcesos = {this.state.numeroProcesos}
               tiempoActual = {this.state.tiempoActual}
               setReadyProcess = {this.setReadyProcess}
-              />
+            />
           </Col>
         </Row>
         <Row className="cpu">
           <Col>
             <CPU 
-            selectAlgoritmo={this.selectAlgoritmo}
+              selectAlgoritmoCPU={this.selectAlgoritmoCPU}
               running = {this.state.running} 
               tiempoActual = {this.state.tiempoActual}
               setQuantumApp = {this.setQuantumApp}
             />
           </Col>
         </Row>
-        {/*
-        <Row>
+        <Row className="memoria">
           <Col>
-            <Memoria />
+            <Memoria running = {this.state.running} />
           </Col>
         </Row>
-        */}
         <Row>
           <Col>
             <p>Cargar procesos desde archivo</p>
