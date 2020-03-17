@@ -17,6 +17,7 @@ class App extends React.Component {
 
     this.state = {
       tiempoActual: 0,
+      contadorBlocked: 0,
       numeroProcesos: '',
       quantum: 0,
       //Cada uno de estos es un arreglo de los procesos que contienen
@@ -126,22 +127,34 @@ class App extends React.Component {
         finished: [...state.finished, running]
       }));
     } else if(this.state.running.quantumRestante === 0 && this.state.algoritmo === "rr"){
+      await this.setStatePromise(this, state => ({
+        running: {...state.running, 
+          quantumRestante: state.running.quantum, 
+        }
+      }));
       let running = this.state.running;
       await this.setStatePromise(this, state => ({
         running: state.ready.shift(),
-        ready: [...state.ready, running]
+        ready: [...state.ready, running],
       }));
     } else {
       await this.setStatePromise(this, state => ({
         tiempoActual: state.tiempoActual + 1,
+        contadorBlocked: state.contadorBlocked + 1,
         running: {...state.running, 
           quantumRestante: state.algoritmo === "rr" ? state.running.quantumRestante - 1 : state.running.quantumRestante,
-          envejecimiento: state.running.envejecimiento + 1,
+          envejecimiento: state.tiempoActual - state.running.llegada - state.running.cpuAsignado,
           cpuAsignado: state.running.cpuAsignado + 1,
           cpuRestante: state.running.cpuRestante - 1
         },
-        ready: this.envejecerProcesos(state.ready)
+        ready: this.envejecerProcesos(state.ready),
+        
     }));
+      if(this.state.contadorBlocked % 5 == 0) {
+        let value = "Dispositivo de I/O"
+        await this.setStatePromise(this, state => ({ interrupcion: value }));
+        this.incrementarTiempo();
+      }
     }
   }
 
@@ -184,7 +197,7 @@ class App extends React.Component {
 }
 
   ordenarSRT(procesos){
-    procesos.sort((a,b) => (a.cpuRestante < b.cpuRestante) ? 1: -1);
+    procesos.sort((a,b) => (a.cpuRestante > b.cpuRestante) ? 1: -1);
     return procesos;
 }
 
@@ -230,7 +243,7 @@ class App extends React.Component {
                         estado: estado,
                         paginas: paginas,
                         cpuAsignado: 0,
-                        envejecimiento: 0,
+                        envejecimiento: tiempoActual - llegada,
                         cpuRestante: tiempoEstimado,
                         quantum: state.quantum,
                         quantumRestante: state.quantum
@@ -248,7 +261,7 @@ class App extends React.Component {
                         estado: estado,
                         paginas: paginas,
                         cpuAsignado: 0,
-                        envejecimiento: 0,
+                        envejecimiento: tiempoActual - llegada,
                         cpuRestante: tiempoEstimado,
                         quantum: state.quantum,
                         quantumRestante: state.quantum
@@ -266,7 +279,7 @@ class App extends React.Component {
                         estado: estado,
                         paginas: paginas,
                         cpuAsignado: 0,
-                        envejecimiento: 0,
+                        envejecimiento: tiempoActual - llegada,
                         cpuRestante: tiempoEstimado,
                         quantum: state.quantum,
                         quantumRestante: state.quantum
