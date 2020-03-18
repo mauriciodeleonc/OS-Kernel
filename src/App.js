@@ -91,6 +91,7 @@ class App extends React.Component {
               finished: [...state.finished, running],
               tiempoActual: state.tiempoActual + 1
             }));
+            this.selectAlgoritmoCPU(this.state.algoritmoCPU);
           }
           break;
         case "Externa de quantum expirado":
@@ -102,6 +103,7 @@ class App extends React.Component {
               ready: [...state.ready, running],
               tiempoActual: state.tiempoActual + 1
             }));
+            this.selectAlgoritmoCPU(this.state.algoritmoCPU);
           }
           break;
         case "Dispositivo de I/O":
@@ -114,6 +116,7 @@ class App extends React.Component {
               ready: [...state.ready, running, blocked],
               tiempoActual: state.tiempoActual + 1
             }));
+            this.selectAlgoritmoCPU(this.state.algoritmoCPU);
           }
           break;
         case "SVC de solicitud de I/O":
@@ -125,6 +128,7 @@ class App extends React.Component {
               blocked: [...state.blocked, running],
               tiempoActual: state.tiempoActual + 1
             }));
+            this.selectAlgoritmoCPU(this.state.algoritmoCPU);
           }
           break;
         case "SVC de solitud de fecha":
@@ -136,6 +140,7 @@ class App extends React.Component {
               blocked: [...state.blocked, running],
               tiempoActual: state.tiempoActual + 1
             }));
+            this.selectAlgoritmoCPU(this.state.algoritmoCPU);
           }
           break;
         case "Error de programa":
@@ -147,6 +152,7 @@ class App extends React.Component {
               finished: [...state.finished, running],
               tiempoActual: state.tiempoActual + 1
             }));
+            this.selectAlgoritmoCPU(this.state.algoritmoCPU);
           }
           break;
         default:
@@ -224,12 +230,12 @@ class App extends React.Component {
   }
 
   ordenarFIFO(procesos) {
-    procesos.sort((a, b) => (a.llegada > b.llegada ) ? 1: -1);
+    procesos.sort((a, b) => (a.llegada > b.llegada) ? 1 : -1);
     return procesos;
   }
 
   ordenarSRT(procesos){
-    procesos.sort((a,b) => (a.cpuRestante > b.cpuRestante) ? 1: -1);
+    procesos.sort((a,b) => (a.cpuRestante > b.cpuRestante) ? 1 : -1);
     return procesos;
   }
 
@@ -239,7 +245,7 @@ class App extends React.Component {
   }
 
   prioridad(proceso){
-    return (proceso.envejecimiento + proceso.cpuRestante)/proceso.cpuRestante;
+    return (proceso.envejecimiento + proceso.cpuRestante) / proceso.cpuRestante;
   }
 
   async llenarProcesos(archivo){
