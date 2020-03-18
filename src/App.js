@@ -39,7 +39,11 @@ class App extends React.Component {
       ],
       interrupcion: undefined
   }
+
+    //Bind de funciones de Memoria
+    this.selectAlgoritmoMemoria = this.selectAlgoritmoMemoria.bind(this);
     this.handleSelectPagina = this.handleSelectPagina.bind(this);
+
     this.incrementarTiempo = this.incrementarTiempo.bind(this);
     this.setReadyProcess = this.setReadyProcess.bind(this);
     this.llenarProcesos = this.llenarProcesos.bind(this);
@@ -49,6 +53,8 @@ class App extends React.Component {
     //Bind de funciones para leer archivo
     this.handleFileChosen = this.handleFileChosen.bind(this);
     this.handleFileRead = this.handleFileRead.bind(this);
+
+    //Bind de funciones de CPU
     this.selectAlgoritmoCPU = this.selectAlgoritmoCPU.bind(this);
     this.selectInterrupcion = this.selectInterrupcion.bind(this);
   }
@@ -328,7 +334,6 @@ class App extends React.Component {
     this.setState(state => ({
       numeroProcesos: archivo[2]
     }))
-
   }
 
   //Funciones para leer archivos
@@ -362,9 +367,45 @@ class App extends React.Component {
     });
   }
 
+  //Funcion que recibe el algoritmo con el que se va a estar trabajando en memoria
+  selectAlgoritmoMemoria(algoritmoMemoria) {
+    this.setState({ algoritmoMemoria });
+  }
+
   handleSelectPagina() {
     let pagina = this.refs.select.value;
-    this.props.handleSelectPagina(pagina);
+    //Llega la pagina que se quiere ejecutar
+    /*
+      Si el bit de residencia está en 0 entonces se realiza el reemplazo
+      FIFO:
+        Se "reemplaza" por el que tenga su bit de residencia en 1 y que su tiempo de llegada sea el menor
+        Y se realiza un "solicitud de I/O" porque tuvo que ir a memoria secundaria por la info y cargarla en RAM
+
+      NUR:
+        Se reemplaza por el que tenga su bit de residencia en 1 y se va en el siguiente orden:
+          00
+          01
+          10
+          11
+          (el primero que encuentre en ese orden)
+
+      LRU:
+        Se reemplaza por el que tenga su bit de residencia en 1 y que su ultimo acceso sea el menor
+        Y se realiza un "solicitud de I/O" porque tuvo que ir a memoria secundaria por la info y cargarla en RAM
+
+      LFU:
+        Se reemplaza por el que tenga su bit de residencia en 1 y que su cantidad de accesos sea la menor
+        Y se realiza un "solicitud de I/O" porque tuvo que ir a memoria secundaria por la info y cargarla en RAM
+    */
+    /*
+      Si el bit de residencia está en 1 entonces se ignora el algoritmo de reemplazo,
+      r: se mantiene igual
+      llegada: se mantiene igual
+      ult acceso: se modifica por el tiempo actual y se le suma 1 al tiempo actual
+      accesos: accesos + 1
+      NUR: se transforma en 1x (x es el bit de modificación, ese nunca cambia a menos que se le haga reset)
+        Si se le hace reset entonces todos los NURS de todas las páginas se vuelven 00
+    */
   }
 
   render(){
@@ -372,27 +413,23 @@ class App extends React.Component {
       <Container fluid>
         <Row className="control">
           <Col>
-          <Row>
-                <Col>
-                    <p>Tiempo Actual: {this.state.tiempoActual}</p>
-                    <Button variant="primary" onClick={this.incrementarTiempo}>Ejecutar Instrucción</Button>
-                </Col>
-                <Col>
-                  <Form>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>Ejecutar página</Form.Label>
-                        <Form.Control as="select" ref="select" onChange={this.handleSelectPagina}>
-                          {this.state.running !== undefined && this.state.running.paginas !== undefined && this.state.running.paginas.map((pagina,i) => <option key={i}>{i}</option>)}
-                        </Form.Control>
-                    </Form.Group>
-                  </Form>
-                </Col>
-                <Col>
-                    <p>Interrupción</p>
-                    <Form.Control as="select" ref="interrupcion" onChange={this.selectInterrupcion}>
-                      {this.state.interrupciones.map(interrupcion => <option key={interrupcion}>{interrupcion}</option>)}
-                    </Form.Control>
-                </Col>
+            <Row className="d-flex justify-content-between">
+              <Col md={2}>
+                  <p>Tiempo Actual: {this.state.tiempoActual}</p>
+                  <Button variant="primary" onClick={this.incrementarTiempo}>Ejecutar Instrucción</Button>
+              </Col>
+              <Col md={4}>
+                <p>Ejecutar página</p>
+                <Form.Control as="select" ref="select" onChange={this.handleSelectPagina}>
+                  {this.state.running !== undefined && this.state.running.paginas !== undefined && this.state.running.paginas.map((pagina,i) => <option key={i}>{i}</option>)}
+                </Form.Control>
+              </Col>
+              <Col md={5}>
+                <p>Interrupción</p>
+                <Form.Control as="select" ref="interrupcion" onChange={this.selectInterrupcion}>
+                  {this.state.interrupciones.map(interrupcion => <option key={interrupcion}>{interrupcion}</option>)}
+                </Form.Control>
+              </Col>
             </Row>
           </Col>
         </Row>
@@ -422,7 +459,10 @@ class App extends React.Component {
         </Row>
         <Row className="memoria">
           <Col>
-            <Memoria running = {this.state.running} />
+            <Memoria 
+              running = {this.state.running} 
+              selectAlgoritmoMemoria = {this.selectAlgoritmoMemoria}
+            />
           </Col>
         </Row>
         <Row>

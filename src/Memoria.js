@@ -17,7 +17,7 @@ class Memoria extends React.Component {
                 <TablaPaginas running = {this.props.running} />
                 </Col>
                 <Col sm={3}>
-            <ChooseMemoria handleSelect={this.props.selectAlgoritmoCPU} setQuantum = {this.setQuantum}/>
+                <ChooseMemoria handleSelect={this.props.selectAlgoritmoMemoria} />
                 </Col>  
             </Row>
         );
