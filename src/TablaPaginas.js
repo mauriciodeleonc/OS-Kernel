@@ -4,6 +4,7 @@ import Table from 'react-bootstrap/Table';
 
 class TablaPaginas extends React.Component{
     render(){
+        console.log(this.props.running);
         if(this.props.running.paginas !== undefined) {
             return(
                 <Table striped bordered hover responsive className='tablaPaginas'>

@@ -26,7 +26,9 @@ class App extends React.Component {
       running: {},
       blocked: [],
       finished: [],
-      algoritmo: "fifo",
+      algoritmoCPU: "fifo",
+      algoritmoMemoria: "fifo",
+      pagina: '0',
       interrupciones: [
         "SVC de solicitud de I/O",
         "SVC de terminación normal", 
@@ -37,6 +39,7 @@ class App extends React.Component {
       ],
       interrupcion: undefined
   }
+    this.handleSelectPagina = this.handleSelectPagina.bind(this);
     this.incrementarTiempo = this.incrementarTiempo.bind(this);
     this.setReadyProcess = this.setReadyProcess.bind(this);
     this.llenarProcesos = this.llenarProcesos.bind(this);
@@ -80,47 +83,71 @@ class App extends React.Component {
       let running = this.state.running;
       switch(this.state.interrupcion) {
         case "SVC de terminación normal":
-          await this.setStatePromise(this, state => ({
-            running: state.ready.shift(),
-            finished: [...state.finished, running],
-            tiempoActual: state.tiempoActual + 1
-          }));
+          if(this.state.running === undefined || this.state.ready.length === 0) {
+            alert("No se puede ejecutar la interrupción");
+          } else {
+            await this.setStatePromise(this, state => ({
+              running: state.ready.shift(),
+              finished: [...state.finished, running],
+              tiempoActual: state.tiempoActual + 1
+            }));
+          }
           break;
         case "Externa de quantum expirado":
-          await this.setStatePromise(this, state => ({
-            running: state.ready.shift(),
-            ready: [...state.ready, running],
-            tiempoActual: state.tiempoActual + 1
-          }));
+          if(this.state.running === undefined || this.state.ready.length === 0) {
+            alert("No se puede ejecutar la interrupción");
+          } else {
+            await this.setStatePromise(this, state => ({
+              running: state.ready.shift(),
+              ready: [...state.ready, running],
+              tiempoActual: state.tiempoActual + 1
+            }));
+          }
           break;
         case "Dispositivo de I/O":
-          let blocked = this.state.blocked.shift();
-          await this.setStatePromise(this, state => ({
-            running: state.ready.shift(),
-            ready: [...state.ready, running, blocked],
-            tiempoActual: state.tiempoActual + 1
-          }));
+          if(this.state.blocked === undefined || this.state.blocked.length === 0) {
+            alert("No se puede ejecutar la interrupción");
+          } else {
+            let blocked = this.state.blocked.shift();
+            await this.setStatePromise(this, state => ({
+              running: state.ready.shift(),
+              ready: [...state.ready, running, blocked],
+              tiempoActual: state.tiempoActual + 1
+            }));
+          }
           break;
         case "SVC de solicitud de I/O":
-          await this.setStatePromise(this, state => ({
-            running: state.ready.shift(),
-            blocked: [...state.blocked, running],
-            tiempoActual: state.tiempoActual + 1
-          }));
+          if(this.state.running === undefined || this.state.ready.length === 0) {
+            alert("No se puede ejecutar la interrupción");
+          } else {
+            await this.setStatePromise(this, state => ({
+              running: state.ready.shift(),
+              blocked: [...state.blocked, running],
+              tiempoActual: state.tiempoActual + 1
+            }));
+          }
           break;
         case "SVC de solitud de fecha":
-          await this.setStatePromise(this, state => ({
-            running: state.ready.shift(),
-            blocked: [...state.blocked, running],
-            tiempoActual: state.tiempoActual + 1
-          }));
+          if(this.state.running === undefined || this.state.ready.length === 0) {
+            alert("No se puede ejecutar la interrupción");
+          } else {
+            await this.setStatePromise(this, state => ({
+              running: state.ready.shift(),
+              blocked: [...state.blocked, running],
+              tiempoActual: state.tiempoActual + 1
+            }));
+          }
           break;
         case "Error de programa":
-          await this.setStatePromise(this, state => ({
-            running: state.ready.shift(),
-            finished: [...state.finished, running],
-            tiempoActual: state.tiempoActual + 1
-          }));
+          if(this.state.running === undefined || this.state.ready.length === 0) {
+            alert("No se puede ejecutar la interrupción");
+          } else {
+            await this.setStatePromise(this, state => ({
+              running: state.ready.shift(),
+              finished: [...state.finished, running],
+              tiempoActual: state.tiempoActual + 1
+            }));
+          }
           break;
         default:
             break;
@@ -132,7 +159,7 @@ class App extends React.Component {
         running: state.ready.shift(),
         finished: [...state.finished, running]
       }));
-    } else if(this.state.running.quantumRestante === 0 && this.state.algoritmo === "rr"){
+    } else if(this.state.running.quantumRestante === 0 && this.state.algoritmoCPU === "rr"){
       await this.setStatePromise(this, state => ({
         running: {...state.running, 
           quantumRestante: state.running.quantum, 
@@ -148,7 +175,7 @@ class App extends React.Component {
         tiempoActual: state.tiempoActual + 1,
         contadorBlocked: state.contadorBlocked + 1,
         running: {...state.running, 
-          quantumRestante: state.algoritmo === "rr" ? state.running.quantumRestante - 1 : state.running.quantumRestante,
+          quantumRestante: state.algoritmoCPU === "rr" ? state.running.quantumRestante - 1 : state.running.quantumRestante,
           envejecimiento: state.tiempoActual - state.running.llegada - state.running.cpuAsignado,
           cpuAsignado: state.running.cpuAsignado + 1,
           cpuRestante: state.running.cpuRestante - 1
@@ -169,9 +196,9 @@ class App extends React.Component {
     }))
   }
 
-  selectAlgoritmoCPU(algoritmo) {
+  selectAlgoritmoCPU(algoritmoCPU) {
     let ready = [...this.state.ready];
-    switch(algoritmo) {
+    switch(algoritmoCPU) {
       case "fifo":
         ready = this.ordenarFIFO(ready);
         break;
@@ -187,7 +214,7 @@ class App extends React.Component {
       default:
         break;
     }
-    this.setState({ algoritmo, ready });
+    this.setState({ algoritmoCPU, ready });
   }
 
   async selectInterrupcion() {
@@ -199,12 +226,12 @@ class App extends React.Component {
   ordenarFIFO(procesos) {
     procesos.sort((a, b) => (a.llegada > b.llegada ) ? 1: -1);
     return procesos;
-}
+  }
 
   ordenarSRT(procesos){
     procesos.sort((a,b) => (a.cpuRestante > b.cpuRestante) ? 1: -1);
     return procesos;
-}
+  }
 
   ordenarHRRN(procesos){
     procesos.sort((a,b) => (this.prioridad(a) > this.prioridad(b)) ? 1 : -1);
@@ -218,7 +245,6 @@ class App extends React.Component {
   async llenarProcesos(archivo){
     let contadorArchivo = 3;
     let maxPaginas = archivo[0];
-    console.log("MaxPaginas ="  + maxPaginas);
     let tiempoActual = archivo[1];
     await this.setStatePromise(this,{
       tiempoActual: parseInt(tiempoActual,10)
@@ -226,12 +252,10 @@ class App extends React.Component {
     let numeroProcesos = archivo[2];
     for(let i = 0; i < numeroProcesos; i++){
         let nombreProceso = i + 1;
-        console.log("Proceso: " + nombreProceso);
         let llegada = archivo[contadorArchivo++];
         let tiempoEstimado = archivo[contadorArchivo++];
         let estado = archivo[contadorArchivo++];
         let numeroPaginas = archivo[contadorArchivo++];
-        console.log(numeroPaginas);
         let paginas = new Array(numeroPaginas);
         for(let j = 0; j < numeroPaginas; j++){
             paginas[j] = new Array(6);
@@ -239,7 +263,6 @@ class App extends React.Component {
                 paginas[j][k] = archivo[contadorArchivo++];
             } 
         }
-        console.log(paginas);
 
         if(estado == 1){
             this.setState(state => ({ 
@@ -300,40 +323,43 @@ class App extends React.Component {
       numeroProcesos: archivo[2]
     }))
 
-}
+  }
 
-//Funciones para leer archivos
-handleFileRead(){
-    let archivo = fileReader.result;
-    archivo = archivo.replace(/\n/g, ",").split(",");
-    for(let i = 0; i < archivo.length; i++) {
-        archivo[i] = archivo[i].replace(" ", "");
-    }
-    this.llenarProcesos(archivo);
-}
+  //Funciones para leer archivos
+  handleFileRead(){
+      let archivo = fileReader.result;
+      archivo = archivo.replace(/\n/g, ",").split(",");
+      for(let i = 0; i < archivo.length; i++) {
+          archivo[i] = archivo[i].replace(" ", "");
+      }
+      this.llenarProcesos(archivo);
+  }
 
-handleFileChosen(file){
-    fileReader = new FileReader();
-    fileReader.onloadend = this.handleFileRead;
-    fileReader.readAsText(file);
-}
+  handleFileChosen(file){
+      fileReader = new FileReader();
+      fileReader.onloadend = this.handleFileRead;
+      fileReader.readAsText(file);
+  }
 
-setReadyProcess(nombreProceso, llegada, tiempoEstimado, estado, paginas) {
-  console.log(nombreProceso,llegada, tiempoEstimado, estado, paginas )
-  this.setState({ 
-    ready: [...this.state.ready,
-        {
-            nombreProceso: nombreProceso,
-            llegada: llegada,
-            tiempoEstimado: tiempoEstimado,
-            estado: estado,
-            paginas: paginas
-        }
+  setReadyProcess(nombreProceso, llegada, tiempoEstimado, estado, paginas) {
+    this.setState({ 
+      ready: [...this.state.ready,
+          {
+              nombreProceso: nombreProceso,
+              llegada: llegada,
+              tiempoEstimado: tiempoEstimado,
+              estado: estado,
+              paginas: paginas
+          }
 
-    ]
-});
+      ]
+    });
+  }
 
-}
+  handleSelectPagina() {
+    let pagina = this.refs.select.value;
+    this.props.handleSelectPagina(pagina);
+  }
 
   render(){
     return (
@@ -344,6 +370,16 @@ setReadyProcess(nombreProceso, llegada, tiempoEstimado, estado, paginas) {
                 <Col>
                     <p>Tiempo Actual: {this.state.tiempoActual}</p>
                     <Button variant="primary" onClick={this.incrementarTiempo}>Ejecutar Instrucción</Button>
+                </Col>
+                <Col>
+                  <Form>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>Ejecutar página</Form.Label>
+                        <Form.Control as="select" ref="select" onChange={this.handleSelectPagina}>
+                          {this.state.running !== undefined && this.state.running.paginas !== undefined && this.state.running.paginas.map((pagina,i) => <option key={i}>{i}</option>)}
+                        </Form.Control>
+                    </Form.Group>
+                  </Form>
                 </Col>
                 <Col>
                     <p>Interrupción</p>

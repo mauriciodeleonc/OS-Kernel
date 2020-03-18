@@ -38,7 +38,6 @@ class New extends React.Component{
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log("nombreproceso: " + this.state.nombreProceso + "tiempoActual " +this.props.tiempoActual + "ejecTotal" + this.state.ejecTotal + "estado" + this.state.estado )
         this.props.setReadyProcess(this.state.nombreProceso, this.props.tiempoActual, this.state.ejecTotal, this.state.estado, [[0,0,0,3,3,3],[0,0,0,3,3,3]])
         this.props.incrementarTiempo()
     }
