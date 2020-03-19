@@ -380,42 +380,44 @@ class App extends React.Component {
   }
 
   async handleSelectPagina() {
-    let paginaPorEjecutar = this.refs.select.value;
+    let paginaPorEjecutar = this.refs.select.value; //Llega el numero pagina que se quiere ejecutar
     console.log(paginaPorEjecutar);
-    let paginas = this.state.running.paginas;
+    let paginas = this.state.running.paginas; //Todas las páginas que tiene actualmente el proceso en running
     console.log(paginas);
-    let paginaActual = this.state.running.paginas[paginaPorEjecutar];
+    let paginaActual = this.state.running.paginas[paginaPorEjecutar]; //Solo la página que se quiere reemplazar de todas
     console.log(paginaActual);
-    let bitResidencia = paginaActual[0];
+    let bitResidencia = paginaActual[0]; //Bit de residencia de la pagina que se quiere reemplazar
     console.log(bitResidencia);
-
     
-    //Llega la pagina que se quiere ejecutar
-    /*
-      Si el bit de residencia está en 0 entonces se realiza el reemplazo
-      FIFO:
-        Se "reemplaza" por el que tenga su bit de residencia en 1 y que su tiempo de llegada sea el menor
-        Y se realiza un "solicitud de I/O" porque tuvo que ir a memoria secundaria por la info y cargarla en RAM
-
-      NUR:
-        Se reemplaza por el que tenga su bit de residencia en 1 y se va en el siguiente orden:
-          00
-          01
-          10
-          11
-          (el primero que encuentre en ese orden)
-
-      LRU:
-        Se reemplaza por el que tenga su bit de residencia en 1 y que su ultimo acceso sea el menor
-        Y se realiza un "solicitud de I/O" porque tuvo que ir a memoria secundaria por la info y cargarla en RAM
-
-      LFU:
-        Se reemplaza por el que tenga su bit de residencia en 1 y que su cantidad de accesos sea la menor
-        Y se realiza un "solicitud de I/O" porque tuvo que ir a memoria secundaria por la info y cargarla en RAM
-    */
   
    //la cantidad maxina de paginas ha sido alcanzada por lo tanto se debe realizar un reemplazo
     if(bitResidencia == 0 && this.state.maxPaginasActivas == this.state.running.paginasActivas){ //Se realizan los algoritmos de reemplazo
+      /*
+        Si el bit de residencia está en 0 entonces se realiza el reemplazo
+        FIFO:
+          Se "reemplaza" por el que tenga su bit de residencia en 1 y que su tiempo de llegada sea el menor
+          Y se realiza un "solicitud de I/O" porque tuvo que ir a memoria secundaria por la info y cargarla en RAM
+
+        NUR:
+          Se reemplaza por el que tenga su bit de residencia en 1 y se va en el siguiente orden:
+            00
+            01
+            10
+            11
+            (el primero que encuentre en ese orden)
+
+        LRU:
+          Se reemplaza por el que tenga su bit de residencia en 1 y que su ultimo acceso sea el menor
+          Y se realiza un "solicitud de I/O" porque tuvo que ir a memoria secundaria por la info y cargarla en RAM
+
+        LFU:
+          Se reemplaza por el que tenga su bit de residencia en 1 y que su cantidad de accesos sea la menor
+          Y se realiza un "solicitud de I/O" porque tuvo que ir a memoria secundaria por la info y cargarla en RAM
+      */
+
+
+      let value = "SVC de solicitud de I/O"
+      await this.setStatePromise(this, state => ({ interrupcion: value }));
       let arrLlegadas = [];
       let arrUltAcceso = [];
       let arrAccesos = [];
@@ -459,10 +461,10 @@ class App extends React.Component {
               ...state.running, 
               paginas: paginas, 
             },
-            tiempoActual: state.tiempoActual + 1 
+            //tiempoActual: state.tiempoActual + 1 
           }));
           console.log(this.state.running);
-          //agregar interrupción de solicitud de I/O
+          this.incrementarTiempo();
           break;
 
         case "lru":
@@ -494,10 +496,10 @@ class App extends React.Component {
               ...state.running, 
               paginas: paginas, 
             },
-            tiempoActual: state.tiempoActual + 1 
+            //tiempoActual: state.tiempoActual + 1 
           }));
           console.log(this.state.running);
-          //agregar interrupción de solicitud de I/O
+          this.incrementarTiempo();
           break;
 
         case "lfu":
@@ -529,21 +531,22 @@ class App extends React.Component {
               ...state.running, 
               paginas: paginas, 
             },
-            tiempoActual: state.tiempoActual + 1 
+            //tiempoActual: state.tiempoActual + 1 
           }));
           console.log(this.state.running);
-          //agregar interrupción de solicitud de I/O
+          this.incrementarTiempo();
           break;
-          
+
         case "nur":
+          console.log(this.state.running);
           if(arrNUR.includes("00")){
-
+            paginas[arrNUR.indexOf("00")][0] = 0; //apago el que estoy reemplazando
           } else if(arrNUR.includes("10")){
-
+            paginas[arrNUR.indexOf("10")][0] = 0; //apago el que estoy reemplazando
           } else if(arrNUR.includes("01")){
-            
+            paginas[arrNUR.indexOf("01")][0] = 0; //apago el que estoy reemplazando
           } else if(arrNUR.includes("11")){
-            
+            paginas[arrNUR.indexOf("11")][0] = 0; //apago el que estoy reemplazando
           }
           console.log(this.state.running);
           paginaActual[0] = 1; //r
@@ -559,10 +562,10 @@ class App extends React.Component {
               ...state.running, 
               paginas: paginas, 
             },
-            tiempoActual: state.tiempoActual + 1 
+            //tiempoActual: state.tiempoActual + 1 
           }));
           console.log(this.state.running);
-          //agregar interrupción de solicitud de I/O
+          this.incrementarTiempo();
           break;
         default:
           break;
@@ -592,10 +595,10 @@ class App extends React.Component {
           ...state.running, 
           paginas: paginas, 
         },
-        tiempoActual: state.tiempoActual + 1 
+        //tiempoActual: state.tiempoActual + 1 
       }));
       console.log(this.state.running);
-      //agregar interrupción de solicitud de I/O
+      this.incrementarTiempo();
 
     } else if(bitResidencia == 1){
       /*
