@@ -17,11 +17,12 @@ class Procesos extends React.Component {
                     <h2>Procesos</h2>
                 </Col>
                 <Col>
-                    <New numeroProcesos = {this.props.numeroProcesos}
-                    incrementarTiempo = {this.props.incrementarTiempo}
-                    procesos = {this.props.ready}
-                    tiempoActual = {this.props.tiempoActual}
-                    setReadyProcess = {this.props.setReadyProcess}
+                    <New 
+                        numeroProcesos = {this.props.numeroProcesos}
+                        incrementarTiempo = {this.props.incrementarTiempo}
+                        procesos = {this.props.ready}
+                        tiempoActual = {this.props.tiempoActual}
+                        setReadyProcess = {this.props.setReadyProcess}
                     />
                 </Col>
                 <Col>

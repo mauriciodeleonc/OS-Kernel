@@ -37,7 +37,8 @@ class App extends React.Component {
         "Externa de quantum expirado",
         "Dispositivo de I/O"
       ],
-      interrupcion: undefined
+      interrupcion: undefined,
+      maxPaginasActivas: 0
   }
 
     //Bind de funciones de Memoria
@@ -208,7 +209,7 @@ class App extends React.Component {
     }))
   }
 
-  selectAlgoritmoCPU(algoritmoCPU) {
+  async selectAlgoritmoCPU(algoritmoCPU) {
     let ready = [...this.state.ready];
     switch(algoritmoCPU) {
       case "fifo":
@@ -226,7 +227,7 @@ class App extends React.Component {
       default:
         break;
     }
-    this.setState({ algoritmoCPU, ready });
+    await this.setStatePromise(this, state => ({ algoritmoCPU, ready }));
   }
 
   async selectInterrupcion() {
@@ -256,10 +257,11 @@ class App extends React.Component {
 
   async llenarProcesos(archivo){
     let contadorArchivo = 3;
-    let maxPaginas = archivo[0];
+    let maxPaginasActivas = archivo[0];
     let tiempoActual = archivo[1];
     await this.setStatePromise(this,{
-      tiempoActual: parseInt(tiempoActual,10)
+      tiempoActual: parseInt(tiempoActual,10),
+      maxPaginasActivas: maxPaginasActivas
     });
     let numeroProcesos = archivo[2];
     for(let i = 0; i < numeroProcesos; i++){
@@ -269,15 +271,17 @@ class App extends React.Component {
         let estado = archivo[contadorArchivo++];
         let numeroPaginas = archivo[contadorArchivo++];
         let paginas = new Array(numeroPaginas);
+        let paginasActivas = 0;
         for(let j = 0; j < numeroPaginas; j++){
             paginas[j] = new Array(6);
             for(let k = 0; k < 6; k++){
                 paginas[j][k] = archivo[contadorArchivo++];
+                if(paginas[j][0] == 1) paginasActivas++;
             } 
         }
 
         if(estado == 1){
-            this.setState(state => ({ 
+            await this.setStatePromise(this, state => ({ 
                 running:
                     {
                         nombreProceso: nombreProceso,
@@ -289,13 +293,14 @@ class App extends React.Component {
                         envejecimiento: tiempoActual - llegada,
                         cpuRestante: tiempoEstimado,
                         quantum: state.quantum,
-                        quantumRestante: state.quantum
+                        quantumRestante: state.quantum,
+                        paginasActivas: paginasActivas
                     }
             }));
     
         }
         if(estado == 2){
-            this.setState(state => ({
+            await this.setStatePromise(this, state => ({
                 blocked: [...this.state.blocked,
                     {
                         nombreProceso: nombreProceso,
@@ -307,13 +312,14 @@ class App extends React.Component {
                         envejecimiento: tiempoActual - llegada,
                         cpuRestante: tiempoEstimado,
                         quantum: state.quantum,
-                        quantumRestante: state.quantum
+                        quantumRestante: state.quantum,
+                        paginasActivas: paginasActivas
                     }
                 ]
             }));
         }
         if(estado == 3){
-            this.setState(state => ({ 
+            await this.setStatePromise(this, state => ({ 
                 ready: [...this.state.ready,
                     {
                         nombreProceso: nombreProceso,
@@ -325,13 +331,14 @@ class App extends React.Component {
                         envejecimiento: tiempoActual - llegada,
                         cpuRestante: tiempoEstimado,
                         quantum: state.quantum,
-                        quantumRestante: state.quantum
+                        quantumRestante: state.quantum,
+                        paginasActivas: paginasActivas
                     }
                 ]
             }));
         } 
     }
-    this.setState(state => ({
+    await this.setStatePromise(this, state => ({
       numeroProcesos: archivo[2]
     }))
   }
@@ -352,8 +359,8 @@ class App extends React.Component {
       fileReader.readAsText(file);
   }
 
-  setReadyProcess(nombreProceso, llegada, tiempoEstimado, estado, paginas) {
-    this.setState({ 
+  async setReadyProcess(nombreProceso, llegada, tiempoEstimado, estado, paginas) {
+    await this.setStatePromise(this, state => ({ 
       ready: [...this.state.ready,
           {
               nombreProceso: nombreProceso,
@@ -364,16 +371,25 @@ class App extends React.Component {
           }
 
       ]
-    });
+    }));
   }
 
   //Funcion que recibe el algoritmo con el que se va a estar trabajando en memoria
-  selectAlgoritmoMemoria(algoritmoMemoria) {
-    this.setState({ algoritmoMemoria });
+  async selectAlgoritmoMemoria(algoritmoMemoria) {
+    await this.setStatePromise(this, state => ({ algoritmoMemoria }));
   }
 
-  handleSelectPagina() {
-    let pagina = this.refs.select.value;
+  async handleSelectPagina() {
+    let paginaPorEjecutar = this.refs.select.value;
+    console.log(paginaPorEjecutar);
+    let paginas = this.state.running.paginas;
+    console.log(paginas);
+    let paginaActual = this.state.running.paginas[paginaPorEjecutar];
+    console.log(paginaActual);
+    let bitResidencia = paginaActual[0];
+    console.log(bitResidencia);
+
+    
     //Llega la pagina que se quiere ejecutar
     /*
       Si el bit de residencia está en 0 entonces se realiza el reemplazo
@@ -397,7 +413,96 @@ class App extends React.Component {
         Se reemplaza por el que tenga su bit de residencia en 1 y que su cantidad de accesos sea la menor
         Y se realiza un "solicitud de I/O" porque tuvo que ir a memoria secundaria por la info y cargarla en RAM
     */
-    /*
+  
+   //la cantidad maxina de paginas ha sido alcanzada por lo tanto se debe realizar un reemplazo
+    if(bitResidencia == 0 && this.state.maxPaginasActivas == this.state.running.paginasActivas){ //Se realizan los algoritmos de reemplazo
+      let arrLlegadas = [];
+      let arrUltAcceso = [];
+      let arrAccesos = [];
+      let arrNUR = [];
+
+      for(let i = 0; i < paginas.length; i++){
+        arrLlegadas[i] = paginas[i][1];
+        arrUltAcceso[i] = paginas[i][2];
+        arrAccesos[i] = paginas[i][3];
+        arrNUR[i] = paginas[i][4].toString() + paginas[i][5].toString();
+      }
+
+      let algoritmoMemoria = this.state.algoritmoMemoria;
+      switch(algoritmoMemoria){
+        case "fifo":
+          let menorLlegada = arrLlegadas[0];
+          let indexMenor = 0;
+          for(let i = 0; i < arrLlegadas.length; i++){
+            if(paginas[i][0] == 1){
+              if(arrLlegadas[i] < menorLlegada){ 
+                menorLlegada = arrLlegadas[i];
+                indexMenor = i;
+              }
+            }
+          }
+
+          console.log(this.state.running);
+          paginas[indexMenor][0] = 0; //apago el que estoy reemplazando
+
+          console.log(this.state.running);
+          paginaActual[0] = 1; //r
+          paginaActual[1] = this.state.tiempoActual; //llegada
+          paginaActual[2] = this.state.tiempoActual; //ult acceso
+          paginaActual[3]++; //accesos
+          if(paginaActual[4] == 0)
+            paginaActual[4] = 1; //NUR
+
+          paginas[paginaPorEjecutar] = paginaActual;
+          await this.setStatePromise(this, state => ({
+            running: {
+              ...state.running, 
+              paginas: paginas, 
+            },
+            tiempoActual: state.tiempoActual + 1 
+          }));
+          console.log(this.state.running);
+          break;
+        case "lru":
+          break;
+        case "lfu":
+          break;
+        case "nur":
+          break;
+        default:
+          break;
+      }
+    } else if (bitResidencia == 0 && this.state.maxPaginasActivas > this.state.running.paginasActivas){ //No se requiere hacer reemplazo porque todavía hay espacio disponible
+      /*
+        Se "manda a traer" la página desde memoria secundaria a RAM, entonces después de hacer todos los cambios se ejecuta un "Solicitud de I/O"
+        para llevarlo de Running a Blocked.
+        r: se cambia a 1
+        llegada: se cambia al tiempo actual
+        ult acceso: se modifica por el tiempo actual y se le suma 1 al tiempo actual
+        accesos: accesos + 1
+        NUR: se transforma en 1x (x es el bit de modificación, ese nunca cambia a menos que se le haga reset)
+          Si se le hace reset entonces todos los NURS de todas las páginas se vuelven 00
+      */
+      console.log(this.state.running);
+      paginaActual[0] = 1; //r
+      paginaActual[1] = this.state.tiempoActual; //llegada
+      paginaActual[2] = this.state.tiempoActual; //ult acceso
+      paginaActual[3]++; //accesos
+      if(paginaActual[4] == 0)
+        paginaActual[4] = 1; //NUR
+
+      paginas[paginaPorEjecutar] = paginaActual;
+      await this.setStatePromise(this, state => ({
+        running: {
+          ...state.running, 
+          paginas: paginas, 
+        },
+        tiempoActual: state.tiempoActual + 1 
+      }));
+      console.log(this.state.running);
+
+    } else if(bitResidencia == 1){
+      /*
       Si el bit de residencia está en 1 entonces se ignora el algoritmo de reemplazo,
       r: se mantiene igual
       llegada: se mantiene igual
@@ -405,7 +510,23 @@ class App extends React.Component {
       accesos: accesos + 1
       NUR: se transforma en 1x (x es el bit de modificación, ese nunca cambia a menos que se le haga reset)
         Si se le hace reset entonces todos los NURS de todas las páginas se vuelven 00
-    */
+      */
+      console.log(this.state.running);
+      paginaActual[2] = this.state.tiempoActual; //ult acceso
+      paginaActual[3]++; //accesos
+      if(paginaActual[4] == 0)
+        paginaActual[4] = 1; //NUR
+
+      paginas[paginaPorEjecutar] = paginaActual;
+      await this.setStatePromise(this, state => ({
+        running: {
+          ...state.running, 
+          paginas: paginas, 
+        },
+        tiempoActual: state.tiempoActual + 1 
+      }));
+      console.log(this.state.running);
+    }
   }
 
   render(){

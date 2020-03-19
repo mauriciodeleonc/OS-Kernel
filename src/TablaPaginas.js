@@ -4,7 +4,7 @@ import Table from 'react-bootstrap/Table';
 
 class TablaPaginas extends React.Component{
     render(){
-        console.log(this.props.running);
+        //console.log(this.props.running);
         if(this.props.running.paginas !== undefined) {
             return(
                 <Table striped bordered hover responsive className='tablaPaginas'>
@@ -21,7 +21,7 @@ class TablaPaginas extends React.Component{
                     <tbody>
                         {
                             this.props.running.paginas.map((pagina, i) => 
-                                    <tr>
+                                    <tr key={i}>
                                         <td>{i}</td>
                                         <td>{pagina[0]}</td>
                                         <td>{pagina[1]}</td>
