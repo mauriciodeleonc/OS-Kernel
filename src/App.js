@@ -277,14 +277,10 @@ class App extends React.Component {
             for(let k = 0; k < 6; k++){
                 paginas[j][k] = archivo[contadorArchivo++];
             }
-            console.log(paginas[j]);
             if(paginas[j][0] === "1"){ 
               paginasActivas++;
-              console.log(paginasActivas);
             }
-            
         }
-        console.log(" ");
 
         if(estado == 1){
             await this.setStatePromise(this, state => ({ 
@@ -303,7 +299,6 @@ class App extends React.Component {
                         paginasActivas: paginasActivas
                     }
             }));
-    
         }
         if(estado == 2){
             await this.setStatePromise(this, state => ({
@@ -387,19 +382,11 @@ class App extends React.Component {
 
   async handleSelectPagina() {
     let paginaPorEjecutar = this.refs.select.value; //Llega el numero pagina que se quiere ejecutar
-    console.log(paginaPorEjecutar);
     let paginas = this.state.running.paginas; //Todas las páginas que tiene actualmente el proceso en running
-    console.log(paginas);
     let paginaActual = this.state.running.paginas[paginaPorEjecutar]; //Solo la página que se quiere reemplazar de todas
-    console.log(paginaActual);
     let bitResidencia = paginaActual[0]; //Bit de residencia de la pagina que se quiere reemplazar
-    console.log(bitResidencia);
-    console.log(this.state.maxPaginasActivas);
-    console.log(this.state.paginasActivas);
-    console.log(this.state.maxPaginasActivas == this.state.running.paginasActivas);
     
-  
-   //la cantidad maxina de paginas ha sido alcanzada por lo tanto se debe realizar un reemplazo
+    //la cantidad maxina de paginas ha sido alcanzada por lo tanto se debe realizar un reemplazo
     if(bitResidencia == 0 && this.state.maxPaginasActivas == this.state.running.paginasActivas){ //Se realizan los algoritmos de reemplazo
       /*
         Si el bit de residencia está en 0 entonces se realiza el reemplazo
@@ -442,21 +429,25 @@ class App extends React.Component {
       let algoritmoMemoria = this.state.algoritmoMemoria;
       switch(algoritmoMemoria){
         case "fifo":
+          //console.log(arrLlegadas);
           let menorLlegada = arrLlegadas[0];
           let indexMenorLlegada = 0;
           for(let i = 0; i < arrLlegadas.length; i++){
+            console.log(paginas[i][0]);
+            console.log(arrLlegadas[i]);
+            console.log(menorLlegada);
             if(paginas[i][0] == 1){
-              if(arrLlegadas[i] < menorLlegada){ 
+              if(arrLlegadas[i] <= menorLlegada){ 
                 menorLlegada = arrLlegadas[i];
                 indexMenorLlegada = i;
               }
             }
           }
 
-          console.log(this.state.running);
+          //console.log(this.state.running);
           paginas[indexMenorLlegada][0] = 0; //apago el que estoy reemplazando
 
-          console.log(this.state.running);
+          //console.log(this.state.running);
           paginaActual[0] = 1; //r
           paginaActual[1] = this.state.tiempoActual; //llegada
           paginaActual[2] = this.state.tiempoActual; //ult acceso
@@ -472,7 +463,7 @@ class App extends React.Component {
             },
             //tiempoActual: state.tiempoActual + 1 
           }));
-          console.log(this.state.running);
+          //console.log(this.state.running);
           this.incrementarTiempo();
           break;
 
