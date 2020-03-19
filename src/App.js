@@ -432,18 +432,18 @@ class App extends React.Component {
       switch(algoritmoMemoria){
         case "fifo":
           let menorLlegada = arrLlegadas[0];
-          let indexMenor = 0;
+          let indexMenorLlegada = 0;
           for(let i = 0; i < arrLlegadas.length; i++){
             if(paginas[i][0] == 1){
               if(arrLlegadas[i] < menorLlegada){ 
                 menorLlegada = arrLlegadas[i];
-                indexMenor = i;
+                indexMenorLlegada = i;
               }
             }
           }
 
           console.log(this.state.running);
-          paginas[indexMenor][0] = 0; //apago el que estoy reemplazando
+          paginas[indexMenorLlegada][0] = 0; //apago el que estoy reemplazando
 
           console.log(this.state.running);
           paginaActual[0] = 1; //r
@@ -462,12 +462,107 @@ class App extends React.Component {
             tiempoActual: state.tiempoActual + 1 
           }));
           console.log(this.state.running);
+          //agregar interrupción de solicitud de I/O
           break;
+
         case "lru":
+          let menorUltAcceso = arrUltAcceso[0];
+          let indexMenorUltAcceso = 0;
+          for(let i = 0; i < arrUltAcceso.length; i++){
+            if(paginas[i][0] == 1){
+              if(arrUltAcceso[i] < menorUltAcceso){ 
+                menorUltAcceso = arrUltAcceso[i];
+                indexMenorUltAcceso= i;
+              }
+            }
+          }
+
+          console.log(this.state.running);
+          paginas[indexMenorUltAcceso][0] = 0; //apago el que estoy reemplazando
+
+          console.log(this.state.running);
+          paginaActual[0] = 1; //r
+          paginaActual[1] = this.state.tiempoActual; //llegada
+          paginaActual[2] = this.state.tiempoActual; //ult acceso
+          paginaActual[3]++; //accesos
+          if(paginaActual[4] == 0)
+            paginaActual[4] = 1; //NUR
+
+          paginas[paginaPorEjecutar] = paginaActual;
+          await this.setStatePromise(this, state => ({
+            running: {
+              ...state.running, 
+              paginas: paginas, 
+            },
+            tiempoActual: state.tiempoActual + 1 
+          }));
+          console.log(this.state.running);
+          //agregar interrupción de solicitud de I/O
           break;
+
         case "lfu":
+          let menorAccesos = arrAccesos[0];
+          let indexMenorAccesos = 0;
+          for(let i = 0; i < arrAccesos.length; i++){
+            if(paginas[i][0] == 1){
+              if(arrAccesos[i] < menorAccesos){ 
+                menorAccesos = arrAccesos[i];
+                indexMenorAccesos = i;
+              }
+            }
+          }
+
+          console.log(this.state.running);
+          paginas[indexMenorAccesos][0] = 0; //apago el que estoy reemplazando
+
+          console.log(this.state.running);
+          paginaActual[0] = 1; //r
+          paginaActual[1] = this.state.tiempoActual; //llegada
+          paginaActual[2] = this.state.tiempoActual; //ult acceso
+          paginaActual[3]++; //accesos
+          if(paginaActual[4] == 0)
+            paginaActual[4] = 1; //NUR
+
+          paginas[paginaPorEjecutar] = paginaActual;
+          await this.setStatePromise(this, state => ({
+            running: {
+              ...state.running, 
+              paginas: paginas, 
+            },
+            tiempoActual: state.tiempoActual + 1 
+          }));
+          console.log(this.state.running);
+          //agregar interrupción de solicitud de I/O
           break;
+          
         case "nur":
+          if(arrNUR.includes("00")){
+
+          } else if(arrNUR.includes("10")){
+
+          } else if(arrNUR.includes("01")){
+            
+          } else if(arrNUR.includes("11")){
+            
+          }
+          console.log(this.state.running);
+          paginaActual[0] = 1; //r
+          paginaActual[1] = this.state.tiempoActual; //llegada
+          paginaActual[2] = this.state.tiempoActual; //ult acceso
+          paginaActual[3]++; //accesos
+          if(paginaActual[4] == 0)
+            paginaActual[4] = 1; //NUR
+
+          paginas[paginaPorEjecutar] = paginaActual;
+          await this.setStatePromise(this, state => ({
+            running: {
+              ...state.running, 
+              paginas: paginas, 
+            },
+            tiempoActual: state.tiempoActual + 1 
+          }));
+          console.log(this.state.running);
+          //agregar interrupción de solicitud de I/O
           break;
         default:
           break;
@@ -500,6 +595,7 @@ class App extends React.Component {
         tiempoActual: state.tiempoActual + 1 
       }));
       console.log(this.state.running);
+      //agregar interrupción de solicitud de I/O
 
     } else if(bitResidencia == 1){
       /*
