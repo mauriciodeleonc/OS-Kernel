@@ -276,9 +276,15 @@ class App extends React.Component {
             paginas[j] = new Array(6);
             for(let k = 0; k < 6; k++){
                 paginas[j][k] = archivo[contadorArchivo++];
-                if(paginas[j][0] == 1) paginasActivas++;
-            } 
+            }
+            console.log(paginas[j]);
+            if(paginas[j][0] === "1"){ 
+              paginasActivas++;
+              console.log(paginasActivas);
+            }
+            
         }
+        console.log(" ");
 
         if(estado == 1){
             await this.setStatePromise(this, state => ({ 
@@ -388,6 +394,9 @@ class App extends React.Component {
     console.log(paginaActual);
     let bitResidencia = paginaActual[0]; //Bit de residencia de la pagina que se quiere reemplazar
     console.log(bitResidencia);
+    console.log(this.state.maxPaginasActivas);
+    console.log(this.state.paginasActivas);
+    console.log(this.state.maxPaginasActivas == this.state.running.paginasActivas);
     
   
    //la cantidad maxina de paginas ha sido alcanzada por lo tanto se debe realizar un reemplazo
