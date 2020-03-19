@@ -91,7 +91,7 @@ class App extends React.Component {
       switch(this.state.interrupcion) {
         case "SVC de terminación normal":
           if(this.state.running === undefined || this.state.ready.length === 0) {
-            alert("No se puede ejecutar la interrupción");
+            alert("No se puede ejecutar la interrupción 'SVC de terminación normal'");
           } else {
             await this.setStatePromise(this, state => ({
               running: state.ready.shift(),
@@ -103,7 +103,7 @@ class App extends React.Component {
           break;
         case "Externa de quantum expirado":
           if(this.state.running === undefined || this.state.ready.length === 0) {
-            alert("No se puede ejecutar la interrupción");
+            alert("No se puede ejecutar la interrupción 'Externa de quantum expirado'");
           } else {
             await this.setStatePromise(this, state => ({
               running: state.ready.shift(),
@@ -115,20 +115,20 @@ class App extends React.Component {
           break;
         case "Dispositivo de I/O":
           if(this.state.blocked === undefined || this.state.blocked.length === 0) {
-            alert("No se puede ejecutar la interrupción");
+            alert("No se puede ejecutar la interrupción 'Dispositivo de I/O'");
           } else {
             let blocked = this.state.blocked.shift();
             await this.setStatePromise(this, state => ({
               running: state.ready.shift(),
               ready: [...state.ready, running, blocked],
-              tiempoActual: state.tiempoActual + 1
+              tiempoActual: state.tiempoActual + 1,
             }));
-            this.selectAlgoritmoCPU(this.state.algoritmoCPU);
+            this.selectAlgoritmoCPU(this.state.algoritmoCPU); 
           }
           break;
         case "SVC de solicitud de I/O":
           if(this.state.running === undefined || this.state.ready.length === 0) {
-            alert("No se puede ejecutar la interrupción");
+            alert("No se puede ejecutar la interrupción 'SVC de solicitud de I/O'");
           } else {
             await this.setStatePromise(this, state => ({
               running: state.ready.shift(),
@@ -140,7 +140,7 @@ class App extends React.Component {
           break;
         case "SVC de solitud de fecha":
           if(this.state.running === undefined || this.state.ready.length === 0) {
-            alert("No se puede ejecutar la interrupción");
+            alert("No se puede ejecutar la interrupción 'SVC de solitud de fecha'");
           } else {
             await this.setStatePromise(this, state => ({
               running: state.ready.shift(),
@@ -195,11 +195,13 @@ class App extends React.Component {
         },
         ready: this.envejecerProcesos(state.ready),
         
+        
     }));
       if(this.state.contadorBlocked % 5 == 0) {
         let value = "Dispositivo de I/O"
         await this.setStatePromise(this, state => ({ interrupcion: value }));
         this.incrementarTiempo();
+        this.selectAlgoritmoCPU(this.state.algoritmoCPU);
       }
     }
   }
@@ -247,12 +249,12 @@ class App extends React.Component {
   }
 
   ordenarHRRN(procesos){
-    procesos.sort((a,b) => (this.prioridad(a) > this.prioridad(b)) ? 1 : -1);
+    procesos.sort((a,b) => (this.prioridad(a) < this.prioridad(b)) ? 1 : -1);
     return procesos;
   }
 
   prioridad(proceso){
-    return (proceso.envejecimiento + proceso.cpuRestante) / proceso.cpuRestante;
+    return (proceso.envejecimiento + proceso.tiempoEstimado) / proceso.tiempoEstimado;
   }
 
   async llenarProcesos(archivo){
