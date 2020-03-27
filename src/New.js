@@ -15,7 +15,6 @@ class New extends React.Component{
             pagina: '',
             ejecTotal: '',
             estado: '3',
-
         }
         this.handleName = this.handleName.bind(this);
         this.handlePags = this.handlePags.bind(this);

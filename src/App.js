@@ -47,6 +47,8 @@ class App extends React.Component {
     this.handleSelectPagina = this.handleSelectPagina.bind(this);
     this.ejecutarPagina = this.ejecutarPagina.bind(this);
 
+    this.setClearNURapp = this.setClearNURapp.bind(this);
+
     this.incrementarTiempo = this.incrementarTiempo.bind(this);
     this.setReadyProcess = this.setReadyProcess.bind(this);
     this.llenarProcesos = this.llenarProcesos.bind(this);
@@ -135,7 +137,7 @@ class App extends React.Component {
             alert("No se puede ejecutar la interrupción 'SVC de solicitud de I/O'");
           } else {
             console.log('hola')
-            //console.log(this.state.ready);
+            console.log(JSON.stringify(this.state.ready));
             console.log(" ");
             await this.setStatePromise(this, state => ({
               tiempoActual: state.tiempoActual + 1,
@@ -388,6 +390,18 @@ class App extends React.Component {
 
       ]
     }));
+  }
+
+  async setClearNURapp(flag) {
+    let paginas = this.state.running.paginas;
+    console.log(this.state.running.paginas)
+    for(let i = 0; i < this.state.running.paginas.length; i++ ){
+      paginas[i][4] = "0";
+      paginas[i][5] = "0";
+    }
+    await this.setStatePromise(this, {
+      paginas: paginas
+    });
   }
 
   //Funcion que recibe el algoritmo con el que se va a estar trabajando en memoria
@@ -743,6 +757,7 @@ class App extends React.Component {
             <Memoria 
               running = {this.state.running} 
               selectAlgoritmoMemoria = {this.selectAlgoritmoMemoria}
+              setClearNURapp= {this.setClearNURapp}
             />
           </Col>
         </Row>

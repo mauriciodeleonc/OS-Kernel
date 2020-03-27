@@ -7,9 +7,8 @@ class ChooseMemoria extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            algoritmo: 'fifo'
+            algoritmo: 'fifo',
         }
-
         this.handleSelect = this.handleSelect.bind(this);
     }
 
@@ -36,7 +35,7 @@ class ChooseMemoria extends React.Component {
                         </Form.Group>
                     </Form>
                     {
-                        this.state.algoritmo == 'nur' && <Button onClick = {() => this.props.setQuantum(this.state.value)} >Reset bits NUR</Button>
+                        this.state.algoritmo == 'nur' && <Button onClick = {() => this.props.setClearNUR(true)} >Reset bits NUR</Button>
                     }
                 </Card.Body>
             </Card>
