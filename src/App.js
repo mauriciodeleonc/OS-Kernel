@@ -473,7 +473,7 @@ class App extends React.Component {
           paginaActual[2] = this.state.tiempoActual; //ult acceso
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
-            paginaActual[4] = 1; //NUR
+            paginaActual[4] = '1'; //NUR
 
           paginas[paginaPorEjecutar] = paginaActual;
           this.incrementarTiempo();
@@ -502,16 +502,16 @@ class App extends React.Component {
 
           console.log(this.state.running);
           for(let i = 0; i < paginas[indexMenorUltAcceso].length; i++) {
-            paginas[indexMenorUltAcceso][i] = 0;
+            paginas[indexMenorUltAcceso][i] = '0';
           }
 
-          console.log(this.state.running);
+          //console.log(this.state.running);
           paginaActual[0] = 1; //r
           paginaActual[1] = this.state.tiempoActual; //llegada
           paginaActual[2] = this.state.tiempoActual; //ult acceso
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
-            paginaActual[4] = 1; //NUR
+            paginaActual[4] = '1'; //NUR
 
           paginas[paginaPorEjecutar] = paginaActual;
           await this.setStatePromise(this, state => ({
@@ -521,7 +521,7 @@ class App extends React.Component {
             },
             //tiempoActual: state.tiempoActual + 1 
           }));
-          console.log(this.state.running);
+          //console.log(this.state.running);
           this.incrementarTiempo();
           break;
 
@@ -537,7 +537,7 @@ class App extends React.Component {
             }
           }
           for(let i = 0; i < paginas[indexMenorAccesos].length; i++) {
-            paginas[indexMenorAccesos][i] = 0;
+            paginas[indexMenorAccesos][i] = '0';
           }
 
           console.log(this.state.running);
@@ -546,7 +546,7 @@ class App extends React.Component {
           paginaActual[2] = this.state.tiempoActual; //ult acceso
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
-            paginaActual[4] = 1; //NUR
+            paginaActual[4] = '1'; //NUR
 
           paginas[paginaPorEjecutar] = paginaActual;
           await this.setStatePromise(this, state => ({
@@ -556,7 +556,7 @@ class App extends React.Component {
             },
             //tiempoActual: state.tiempoActual + 1 
           }));
-          console.log(this.state.running);
+          //console.log(this.state.running);
           this.incrementarTiempo();
           break;
 
@@ -565,7 +565,7 @@ class App extends React.Component {
           let indexNUR = -1;
           for(let i = 0; i < arrNUR.length; i++){
             if(paginas[i][0] == 0) {
-              arrNUR[i] = -1;
+              arrNUR[i] = '-1';
             }
           }
           if(arrNUR.includes("00")) {
@@ -579,7 +579,7 @@ class App extends React.Component {
           }
           
           for(let i = 0; i < paginas[indexNUR].length; i++) {
-            paginas[indexNUR][i] = 0;
+            paginas[indexNUR][i] = '0';
           }
 
           console.log(this.state.running);
@@ -588,7 +588,7 @@ class App extends React.Component {
           paginaActual[2] = this.state.tiempoActual; //ult acceso
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
-            paginaActual[4] = 1; //NUR
+            paginaActual[4] = '1'; //NUR
 
           paginas[paginaPorEjecutar] = paginaActual;
           await this.setStatePromise(this, state => ({
@@ -597,7 +597,7 @@ class App extends React.Component {
               paginas: paginas, 
             },
           }));
-          console.log(this.state.running);
+          //console.log(this.state.running);
           this.incrementarTiempo();
           break;
         default:
@@ -614,13 +614,13 @@ class App extends React.Component {
         NUR: se transforma en 1x (x es el bit de modificación, ese nunca cambia a menos que se le haga reset)
           Si se le hace reset entonces todos los NURS de todas las páginas se vuelven 00
       */
-      console.log(this.state.running);
+      //console.log(this.state.running);
       paginaActual[0] = 1; //r
       paginaActual[1] = this.state.tiempoActual; //llegada
       paginaActual[2] = this.state.tiempoActual; //ult acceso
       paginaActual[3]++; //accesos
       if(paginaActual[4] == 0)
-        paginaActual[4] = 1; //NUR
+        paginaActual[4] = '1'; //NUR
 
       paginas[paginaPorEjecutar] = paginaActual;
       await this.setStatePromise(this, state => ({
@@ -629,7 +629,7 @@ class App extends React.Component {
           paginas: paginas, 
         },
       }));
-      console.log(this.state.running);
+      //console.log(this.state.running);
       this.incrementarTiempo();
 
     } else if(bitResidencia == 1){
@@ -642,11 +642,11 @@ class App extends React.Component {
       NUR: se transforma en 1x (x es el bit de modificación, ese nunca cambia a menos que se le haga reset)
         Si se le hace reset entonces todos los NURS de todas las páginas se vuelven 00
       */
-      console.log(this.state.running);
+      //console.log(this.state.running);
       paginaActual[2] = this.state.tiempoActual; //ult acceso
       paginaActual[3]++; //accesos
       if(paginaActual[4] == 0)
-        paginaActual[4] = 1; //NUR
+        paginaActual[4] = '1'; //NUR
 
       paginas[paginaPorEjecutar] = paginaActual;
       await this.setStatePromise(this, state => ({
