@@ -12,7 +12,7 @@ class Scheduling extends React.Component {
                         <p>Nombre: {this.props.running.nombreProceso}</p>
                         <p>Tpo Llegada: {this.props.running.llegada}</p>
                         <p>CPU Asignado: {this.props.running.cpuAsignado}</p>
-                        <p>Envejecimiento: {this.props.running.envejecimiento}</p>
+                        <p>Envejecimiento: {this.props.tiempoActual - this.props.running.llegada - this.props.running.cpuAsignado} </p>
                         <p>CPU Restante: {this.props.running.cpuRestante}</p>
                         <p>Quantum Restante: {this.props.running.quantumRestante}</p>
                         </>

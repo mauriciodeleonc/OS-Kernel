@@ -206,7 +206,6 @@ class App extends React.Component {
           quantumRestante: state.algoritmoCPU === "rr" ? state.running.quantumRestante - 1 : state.running.quantumRestante,
           cpuAsignado: state.running.cpuAsignado + 1,
           cpuRestante: state.running.cpuRestante - 1,
-          envejecimiento: state.tiempoActual - state.running.llegada - state.running.cpuAsignado,
         },
         ready: this.envejecerProcesos(state.ready)
         
