@@ -12,3 +12,4 @@ borrar bits de nur con boton a 0
 ** Envejecimiento fallando, tarda 1 click en hacer efecto
 
 
+
