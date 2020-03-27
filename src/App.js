@@ -463,7 +463,7 @@ class App extends React.Component {
           }
           //console.log(paginas[indexMenorLlegada]);
           for(let i = 0; i < paginas[indexMenorLlegada].length; i++) {
-            paginas[indexMenorLlegada][i] = 0;
+            paginas[indexMenorLlegada][i] = '0';
           }
            //apago el que estoy reemplazando
 
@@ -473,7 +473,7 @@ class App extends React.Component {
           paginaActual[2] = this.state.tiempoActual; //ult acceso
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
-            paginaActual[4] = 1; //NUR
+            paginaActual[4] = '1'; //NUR
 
           paginas[paginaPorEjecutar] = paginaActual;
           await this.setStatePromise(this, state => ({
@@ -501,7 +501,7 @@ class App extends React.Component {
 
           console.log(this.state.running);
           for(let i = 0; i < paginas[indexMenorUltAcceso].length; i++) {
-            paginas[indexMenorUltAcceso][i] = 0;
+            paginas[indexMenorUltAcceso][i] = '0';
           }
 
           //console.log(this.state.running);
@@ -510,7 +510,7 @@ class App extends React.Component {
           paginaActual[2] = this.state.tiempoActual; //ult acceso
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
-            paginaActual[4] = 1; //NUR
+            paginaActual[4] = '1'; //NUR
 
           paginas[paginaPorEjecutar] = paginaActual;
           await this.setStatePromise(this, state => ({
@@ -536,7 +536,7 @@ class App extends React.Component {
             }
           }
           for(let i = 0; i < paginas[indexMenorAccesos].length; i++) {
-            paginas[indexMenorAccesos][i] = 0;
+            paginas[indexMenorAccesos][i] = '0';
           }
 
           console.log(this.state.running);
@@ -545,7 +545,7 @@ class App extends React.Component {
           paginaActual[2] = this.state.tiempoActual; //ult acceso
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
-            paginaActual[4] = 1; //NUR
+            paginaActual[4] = '1'; //NUR
 
           paginas[paginaPorEjecutar] = paginaActual;
           await this.setStatePromise(this, state => ({
@@ -564,7 +564,7 @@ class App extends React.Component {
           let indexNUR = -1;
           for(let i = 0; i < arrNUR.length; i++){
             if(paginas[i][0] == 0) {
-              arrNUR[i] = -1;
+              arrNUR[i] = '-1';
             }
           }
           if(arrNUR.includes("00")) {
@@ -578,7 +578,7 @@ class App extends React.Component {
           }
           
           for(let i = 0; i < paginas[indexNUR].length; i++) {
-            paginas[indexNUR][i] = 0;
+            paginas[indexNUR][i] = '0';
           }
 
           console.log(this.state.running);
@@ -587,7 +587,7 @@ class App extends React.Component {
           paginaActual[2] = this.state.tiempoActual; //ult acceso
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
-            paginaActual[4] = 1; //NUR
+            paginaActual[4] = '1'; //NUR
 
           paginas[paginaPorEjecutar] = paginaActual;
           await this.setStatePromise(this, state => ({
@@ -619,7 +619,7 @@ class App extends React.Component {
       paginaActual[2] = this.state.tiempoActual; //ult acceso
       paginaActual[3]++; //accesos
       if(paginaActual[4] == 0)
-        paginaActual[4] = 1; //NUR
+        paginaActual[4] = '1'; //NUR
 
       paginas[paginaPorEjecutar] = paginaActual;
       await this.setStatePromise(this, state => ({
@@ -645,7 +645,7 @@ class App extends React.Component {
       paginaActual[2] = this.state.tiempoActual; //ult acceso
       paginaActual[3]++; //accesos
       if(paginaActual[4] == 0)
-        paginaActual[4] = 1; //NUR
+        paginaActual[4] = '1'; //NUR
 
       paginas[paginaPorEjecutar] = paginaActual;
       await this.setStatePromise(this, state => ({
