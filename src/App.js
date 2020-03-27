@@ -463,7 +463,7 @@ class App extends React.Component {
           }
           //console.log(paginas[indexMenorLlegada]);
           for(let i = 0; i < paginas[indexMenorLlegada].length; i++) {
-            paginas[indexMenorLlegada][i] = 0;
+            paginas[indexMenorLlegada][i] = '0';
           }
            //apago el que estoy reemplazando
 
@@ -476,6 +476,7 @@ class App extends React.Component {
             paginaActual[4] = 1; //NUR
 
           paginas[paginaPorEjecutar] = paginaActual;
+          this.incrementarTiempo();
           await this.setStatePromise(this, state => ({
             running: {
               ...state.running, 
@@ -484,7 +485,7 @@ class App extends React.Component {
             //tiempoActual: state.tiempoActual + 1 
           }));
           //console.log(this.state.running);
-          this.incrementarTiempo();
+          
           break;
 
         case "lru":
