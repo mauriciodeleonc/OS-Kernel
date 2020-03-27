@@ -1,0 +1,14 @@
+se debe de poder ejecutar una misma pagina seguida
+(DONE) solicitud de i/o habilitada
+(DONE) cuando pasas bit de residencia de 1 a 0 pones todos sus datos en 0
+(DONE) restar cpu restante cuando bit residencia sea 0
+(DONE) cuando se active pagina el primer digito de NUR tiene que ser 1
+cuando se ejecute 5 veces la misma pagina el segundo digito de nur es 1
+borrar bits de nur con boton a 0
+(DONE) arreglar FIFO
+(DONE) arreglar NUR
+
+
+** Envejecimiento fallando, tarda 1 click en hacer efecto
+
+
