@@ -433,9 +433,6 @@ class App extends React.Component {
           let menorLlegada = arrLlegadas[0];
           let indexMenorLlegada = 0;
           for(let i = 0; i < arrLlegadas.length; i++){
-            console.log(paginas[i][0]);
-            console.log(arrLlegadas[i]);
-            console.log(menorLlegada);
             if(paginas[i][0] == 1){
               if(arrLlegadas[i] <= menorLlegada){ 
                 menorLlegada = arrLlegadas[i];
@@ -479,10 +476,10 @@ class App extends React.Component {
             }
           }
 
-          console.log(this.state.running);
+          //console.log(this.state.running);
           paginas[indexMenorUltAcceso][0] = 0; //apago el que estoy reemplazando
 
-          console.log(this.state.running);
+          //console.log(this.state.running);
           paginaActual[0] = 1; //r
           paginaActual[1] = this.state.tiempoActual; //llegada
           paginaActual[2] = this.state.tiempoActual; //ult acceso
@@ -498,7 +495,7 @@ class App extends React.Component {
             },
             //tiempoActual: state.tiempoActual + 1 
           }));
-          console.log(this.state.running);
+          //console.log(this.state.running);
           this.incrementarTiempo();
           break;
 
@@ -514,7 +511,7 @@ class App extends React.Component {
             }
           }
 
-          console.log(this.state.running);
+          //console.log(this.state.running);
           paginas[indexMenorAccesos][0] = 0; //apago el que estoy reemplazando
 
           console.log(this.state.running);
@@ -533,12 +530,12 @@ class App extends React.Component {
             },
             //tiempoActual: state.tiempoActual + 1 
           }));
-          console.log(this.state.running);
+          //console.log(this.state.running);
           this.incrementarTiempo();
           break;
 
         case "nur":
-          console.log(this.state.running);
+          //console.log(this.state.running);
           if(arrNUR.includes("00")){
             paginas[arrNUR.indexOf("00")][0] = 0; //apago el que estoy reemplazando
           } else if(arrNUR.includes("10")){
@@ -548,7 +545,7 @@ class App extends React.Component {
           } else if(arrNUR.includes("11")){
             paginas[arrNUR.indexOf("11")][0] = 0; //apago el que estoy reemplazando
           }
-          console.log(this.state.running);
+          //console.log(this.state.running);
           paginaActual[0] = 1; //r
           paginaActual[1] = this.state.tiempoActual; //llegada
           paginaActual[2] = this.state.tiempoActual; //ult acceso
@@ -564,7 +561,7 @@ class App extends React.Component {
             },
             //tiempoActual: state.tiempoActual + 1 
           }));
-          console.log(this.state.running);
+          //console.log(this.state.running);
           this.incrementarTiempo();
           break;
         default:
@@ -581,7 +578,7 @@ class App extends React.Component {
         NUR: se transforma en 1x (x es el bit de modificación, ese nunca cambia a menos que se le haga reset)
           Si se le hace reset entonces todos los NURS de todas las páginas se vuelven 00
       */
-      console.log(this.state.running);
+      //console.log(this.state.running);
       paginaActual[0] = 1; //r
       paginaActual[1] = this.state.tiempoActual; //llegada
       paginaActual[2] = this.state.tiempoActual; //ult acceso
@@ -597,7 +594,7 @@ class App extends React.Component {
         },
         //tiempoActual: state.tiempoActual + 1 
       }));
-      console.log(this.state.running);
+      //console.log(this.state.running);
       this.incrementarTiempo();
 
     } else if(bitResidencia == 1){
@@ -610,7 +607,7 @@ class App extends React.Component {
       NUR: se transforma en 1x (x es el bit de modificación, ese nunca cambia a menos que se le haga reset)
         Si se le hace reset entonces todos los NURS de todas las páginas se vuelven 00
       */
-      console.log(this.state.running);
+      //console.log(this.state.running);
       paginaActual[2] = this.state.tiempoActual; //ult acceso
       paginaActual[3]++; //accesos
       if(paginaActual[4] == 0)
@@ -624,7 +621,7 @@ class App extends React.Component {
         },
         tiempoActual: state.tiempoActual + 1 
       }));
-      console.log(this.state.running);
+      //console.log(this.state.running);
     }
   }
 
