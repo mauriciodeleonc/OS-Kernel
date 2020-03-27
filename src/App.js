@@ -500,7 +500,9 @@ class App extends React.Component {
           }
 
           console.log(this.state.running);
-          paginas[indexMenorUltAcceso][0] = 0; //apago el que estoy reemplazando
+          for(let i = 0; i < paginas[indexMenorUltAcceso].length; i++) {
+            paginas[indexMenorUltAcceso][i] = 0;
+          }
 
           console.log(this.state.running);
           paginaActual[0] = 1; //r
@@ -533,9 +535,9 @@ class App extends React.Component {
               }
             }
           }
-
-          console.log(this.state.running);
-          paginas[indexMenorAccesos][0] = 0; //apago el que estoy reemplazando
+          for(let i = 0; i < paginas[indexMenorAccesos].length; i++) {
+            paginas[indexMenorAccesos][i] = 0;
+          }
 
           console.log(this.state.running);
           paginaActual[0] = 1; //r
