@@ -6,6 +6,7 @@ class TablaPaginas extends React.Component{
     render(){
         //console.log(this.props.running);
         if(this.props.running.paginas !== undefined) {
+            //console.log(this.props.running);
             return(
                 <Table striped bordered hover responsive className='tablaPaginas'>
                     <thead>

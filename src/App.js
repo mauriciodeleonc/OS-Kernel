@@ -28,7 +28,7 @@ class App extends React.Component {
       finished: [],
       algoritmoCPU: "fifo",
       algoritmoMemoria: "fifo",
-      pagina: '0',
+      pagina: '',
       interrupciones: [
         "Escoge una interrupción",
         "SVC de solicitud de I/O",
@@ -45,6 +45,7 @@ class App extends React.Component {
     //Bind de funciones de Memoria
     this.selectAlgoritmoMemoria = this.selectAlgoritmoMemoria.bind(this);
     this.handleSelectPagina = this.handleSelectPagina.bind(this);
+    this.ejecutarPagina = this.ejecutarPagina.bind(this);
 
     this.incrementarTiempo = this.incrementarTiempo.bind(this);
     this.setReadyProcess = this.setReadyProcess.bind(this);
@@ -129,17 +130,20 @@ class App extends React.Component {
           }
           break;
         case "SVC de solicitud de I/O":
-          console.log('hola')
+          
           if(this.state.running === undefined || this.state.ready.length === 0) {
             alert("No se puede ejecutar la interrupción 'SVC de solicitud de I/O'");
           } else {
+            console.log('hola')
+            //console.log(this.state.ready);
+            console.log(" ");
             await this.setStatePromise(this, state => ({
               tiempoActual: state.tiempoActual + 1,
               running: state.ready.shift(),
               blocked: [...state.blocked, running],
-              
+              //ready: this.envejecerProcesos(state.ready)
             }));
-            console.log(this.state.tiempoActual)
+            console.log(this.state.ready);
             this.selectAlgoritmoCPU(this.state.algoritmoCPU);
           }
           break;
@@ -191,18 +195,18 @@ class App extends React.Component {
         ready: [...state.ready, running],
       }));
     } else {
-      console.log(this.state.tiempoActual)
-      console.log(this.state.running.llegada)
+      //console.log(this.state.tiempoActual)
+      //console.log(this.state.running.llegada)
       await this.setStatePromise(this, state => ({
         tiempoActual: state.tiempoActual + 1,
         contadorBlocked: state.contadorBlocked + 1,
         running: {...state.running, 
           quantumRestante: state.algoritmoCPU === "rr" ? state.running.quantumRestante - 1 : state.running.quantumRestante,
-          envejecimiento: state.tiempoActual - state.running.llegada - state.running.cpuAsignado,
           cpuAsignado: state.running.cpuAsignado + 1,
-          cpuRestante: state.running.cpuRestante - 1
+          cpuRestante: state.running.cpuRestante - 1,
+          envejecimiento: state.tiempoActual - state.running.llegada - state.running.cpuAsignado,
         },
-        //ready: this.envejecerProcesos(state.ready),
+        ready: this.envejecerProcesos(state.ready)
         
         
     }));
@@ -391,10 +395,12 @@ class App extends React.Component {
     await this.setStatePromise(this, state => ({ algoritmoMemoria }));
   }
 
-
-
-  async handleSelectPagina() {
-    let paginaPorEjecutar = this.refs.select.value; //Llega el numero pagina que se quiere ejecutar
+  async ejecutarPagina() {
+    console.log(this.state.running);
+    console.log("");
+    console.log(this.state.ready);
+    let paginaPorEjecutar = this.state.pagina; //Llega el numero pagina que se quiere ejecutar
+    //console.log(paginaPorEjecutar);
     let paginas = this.state.running.paginas; //Todas las páginas que tiene actualmente el proceso en running
     let paginaActual = this.state.running.paginas[paginaPorEjecutar]; //Solo la página que se quiere reemplazar de todas
     let bitResidencia = paginaActual[0]; //Bit de residencia de la pagina que se quiere reemplazar
@@ -435,7 +441,7 @@ class App extends React.Component {
       let arrAccesos = [];
       let arrNUR = [];
 
-      console.log(paginas)
+      //console.log(paginas)
       for(let i = 0; i < paginas.length; i++){
         arrLlegadas[i] = parseInt(paginas[i][1]);
         arrUltAcceso[i] = paginas[i][2];
@@ -474,8 +480,11 @@ class App extends React.Component {
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
             paginaActual[4] = '1'; //NUR
+          if(paginaActual[3] % 5 == 0)
+            paginaActual[5] = '1';
 
           paginas[paginaPorEjecutar] = paginaActual;
+          
           await this.setStatePromise(this, state => ({
             running: {
               ...state.running, 
@@ -499,7 +508,7 @@ class App extends React.Component {
             }
           }
 
-          console.log(this.state.running);
+          //console.log(this.state.running);
           for(let i = 0; i < paginas[indexMenorUltAcceso].length; i++) {
             paginas[indexMenorUltAcceso][i] = '0';
           }
@@ -511,8 +520,11 @@ class App extends React.Component {
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
             paginaActual[4] = '1'; //NUR
+          if(paginaActual[3] % 5 == 0)
+            paginaActual[5] = '1';
 
           paginas[paginaPorEjecutar] = paginaActual;
+          
           await this.setStatePromise(this, state => ({
             running: {
               ...state.running, 
@@ -539,15 +551,18 @@ class App extends React.Component {
             paginas[indexMenorAccesos][i] = '0';
           }
 
-          console.log(this.state.running);
+          //console.log(this.state.running);
           paginaActual[0] = 1; //r
           paginaActual[1] = this.state.tiempoActual; //llegada
           paginaActual[2] = this.state.tiempoActual; //ult acceso
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
             paginaActual[4] = '1'; //NUR
+          if(paginaActual[3] % 5 == 0)
+            paginaActual[5] = '1';
 
           paginas[paginaPorEjecutar] = paginaActual;
+          
           await this.setStatePromise(this, state => ({
             running: {
               ...state.running, 
@@ -560,7 +575,7 @@ class App extends React.Component {
           break;
 
         case "nur":
-          console.log(this.state.running);
+          //console.log(this.state.running);
           let indexNUR = -1;
           for(let i = 0; i < arrNUR.length; i++){
             if(paginas[i][0] == 0) {
@@ -581,15 +596,18 @@ class App extends React.Component {
             paginas[indexNUR][i] = '0';
           }
 
-          console.log(this.state.running);
+          //console.log(this.state.running);
           paginaActual[0] = 1; //r
           paginaActual[1] = this.state.tiempoActual; //llegada
           paginaActual[2] = this.state.tiempoActual; //ult acceso
           paginaActual[3]++; //accesos
           if(paginaActual[4] == 0)
             paginaActual[4] = '1'; //NUR
+          if(paginaActual[3] % 5 == 0)
+            paginaActual[5] = '1';
 
           paginas[paginaPorEjecutar] = paginaActual;
+          
           await this.setStatePromise(this, state => ({
             running: {
               ...state.running, 
@@ -620,8 +638,11 @@ class App extends React.Component {
       paginaActual[3]++; //accesos
       if(paginaActual[4] == 0)
         paginaActual[4] = '1'; //NUR
+      if(paginaActual[3] % 5 == 0)
+        paginaActual[5] = '1';
 
       paginas[paginaPorEjecutar] = paginaActual;
+      
       await this.setStatePromise(this, state => ({
         running: {
           ...state.running, 
@@ -646,8 +667,11 @@ class App extends React.Component {
       paginaActual[3]++; //accesos
       if(paginaActual[4] == 0)
         paginaActual[4] = '1'; //NUR
+      if(paginaActual[3] % 5 == 0)
+        paginaActual[5] = '1';
 
       paginas[paginaPorEjecutar] = paginaActual;
+      
       await this.setStatePromise(this, state => ({
         running: {
           ...state.running, 
@@ -658,6 +682,12 @@ class App extends React.Component {
     }
   }
 
+  async handleSelectPagina() {
+    await this.setStatePromise(this, state => ({ 
+      pagina: this.refs.select.value  
+    }));
+  }
+
   render(){
     return (
       <Container fluid>
@@ -666,7 +696,7 @@ class App extends React.Component {
             <Row className="d-flex justify-content-between">
               <Col md={2}>
                   <p>Tiempo Actual: {this.state.tiempoActual}</p>
-                  <Button variant="primary" onClick={this.incrementarTiempo}>Ejecutar Instrucción</Button>
+                  <Button variant="primary" onClick={this.ejecutarPagina}>Ejecutar página {this.state.pagina}</Button>
               </Col>
               <Col md={4}>
                 <p>Ejecutar página</p>
